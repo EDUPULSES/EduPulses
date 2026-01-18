@@ -1,16 +1,16 @@
-## Hi there 👋
+# ⚡ EduPulse | Master Hub
 
-<!--
-**EDUPULSES/EduPulses** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Welcome to **EduPulse**, a premium educational dashboard designed for Class 9 students. This project combines science notes, math resources, and brain-training games in one sleek interface.
 
-Here are some ideas to get you started:
+### 🌟 Features
+- **Class 9 Science:** Interactive notes for Chapters 1-13.
+- **Brain Games:** 2048, Chess AI, Minesweeper, and Sudoku.
+- **Productivity:** Built-in Todo list and "Vault" system.
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+### 🚀 Live Link
+[Click here to visit EduPulse](https://edupulses.github.io/edupulse/)
+
+### 🛠️ Technology Used
+- HTML5 / CSS3 (Tailwind CSS)
+- JavaScript (Logic & Games)
+- GitHub Pages (Hosting)
