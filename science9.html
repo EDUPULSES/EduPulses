@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPulses Masterpiece | Class 9 Science</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'], 
+                        toddler: ['"Comic Sans MS"', '"Chalkboard SE"', 'cursive'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap');
+        
+        /* --- BASE STYLES --- */
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; overflow-x: hidden; }
+        
+        /* GLASSMOPRHISM UTILS */
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .dark .glass { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07); }
+        .dark .glass-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.05); }
+
+        /* --- STUDY MODES (The Logic) --- */
+        
+        /* 1. Topper Mode: Minimalist, Grayscale, Focused */
+        body.topper-mode { background: #f1f5f9 !important; filter: grayscale(100%) contrast(110%); }
+        body.topper-mode .billboard, body.topper-mode .accent-text { filter: none !important; color: #333 !important; background: #ddd !important; }
+        body.topper-mode .chapter-card:hover { transform: none !important; }
+        
+        /* 2. Toddler Mode: Playful, Comic Sans */
+        body.toddler-mode { font-family: 'Comic Sans MS', cursive !important; background: #fffbeb !important; }
+        body.toddler-mode .glass-card { border: 3px solid #fbbf24; border-radius: 40px; }
+        body.toddler-mode nav { background: #fbbf24 !important; }
+
+        /* 3. Sprint Mode: Urgent, Red Alert */
+        body.sprint-mode { background: #fff1f2 !important; }
+        body.sprint-mode nav { border-bottom: 4px solid #e11d48; }
+        body.sprint-mode .chapter-card { animation: pulse-border 2s infinite; border: 1px solid #e11d48; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); } 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); } }
+
+        /* --- DEVICE VIEWS --- */
+        /* PC View */
+        body.pc-view .main-layout { max-width: 1400px; padding: 0 40px; margin: 0 auto; }
+        body.pc-view #chapterGrid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+        /* Mobile View (Simulated) */
+        body.mobile-view { background-color: #334155; }
+        body.mobile-view .main-layout { 
+            max-width: 420px; 
+            margin: 40px auto; 
+            background: white; 
+            min-height: 90vh; 
+            border-radius: 40px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+            padding: 20px; 
+            position: relative;
+            overflow: hidden;
+        }
+        body.mobile-view.dark .main-layout { background: #0f172a; }
+        body.mobile-view nav { position: absolute; width: 100%; top: 0; border-radius: 30px 30px 0 0; }
+        body.mobile-view #chapterGrid { grid-template-columns: 1fr; }
+        body.mobile-view .billboard { border-radius: 25px; padding: 30px 20px; }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 min-h-screen pc-view selection:bg-indigo-500 selection:text-white">
+
+    <!-- NAVIGATION -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass h-16 transition-all duration-300">
+        <div class="h-full flex items-center justify-between px-4 max-w-[1400px] mx-auto">
+            
+            <!-- Left: Sidebar Toggle & Logo -->
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors">
+                    <i class="fas fa-bars-staggered text-lg"></i>
+                </button>
+                <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black italic shadow-lg shadow-indigo-500/30">EP</div>
+                    <span class="font-black text-lg tracking-tighter hidden sm:block uppercase">Edu<span class="text-indigo-600">Pulses</span></span> <span class="text-amber-800">SCIENCE 9</span>
+                </div>
+            </div>
+
+            <!-- Center: Search Bar (PC) -->
+            <div class="hidden md:flex flex-1 max-w-md mx-4 relative group">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
+                <input type="text" id="searchInput" onkeyup="filterChapters()" placeholder="Search 'Atoms', 'Motion'..." 
+                    class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-full py-2.5 pl-12 pr-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+            </div>
+
+            <a href="index.html" >Home</a>
+
+            <!-- Right: Settings -->
+            <div class="flex items-center gap-3">
+                <!-- Device Toggle -->
+                <div class="hidden md:flex bg-slate-200 dark:bg-slate-800 p-1 rounded-xl">
+                    <button onclick="setDevice('mobile')" id="btn-mobile" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"><i class="fas fa-mobile-alt"></i></button>
+                    <button onclick="setDevice('pc')" id="btn-pc" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"><i class="fas fa-desktop"></i></button>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-indigo-500 hover:rotate-45 transition-transform">
+                    <i id="themeIcon" class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SIDEBAR (Where Modes Live) -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-[60] opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm"></div>
+
+    <div id="sidebar" class="fixed inset-y-0 left-0 w-80 bg-white dark:bg-slate-900 z-[70] transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
+        <div class="p-6 border-b dark:border-slate-800 flex justify-between items-center bg-indigo-600 text-white">
+            <div>
+                <h2 class="font-black text-xl italic tracking-tighter">SETTINGS</h2>
+                <p class="text-[10px] opacity-70 uppercase tracking-widest">Global Preferences</p>
+            </div>
+            <button onclick="toggleSidebar()" class="hover:rotate-90 transition-transform"><i class="fas fa-times"></i></button>
+        </div>
+
+
+        <div class="p-6 space-y-8 flex-1 overflow-y-auto">
+            <!-- Mode Selectors -->
+            <div class="space-y-3">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Study Mode (Syncs Everywhere)</p>
+                
+                <button id="topper-side-btn" onclick="toggleMode('topper-mode')" class="w-full flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-crown"></i></div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-sm">Topper Mode</h3>
+                        <p class="text-[10px] text-slate-500">Focus, Grayscale, No Distractions</p>
+                    </div>
+                </button>
+                
+                <button id="toddler-side-btn" onclick="toggleMode('toddler-mode')" class="w-full flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 rounded-lg bg-pink-100 text-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-child"></i></div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-sm">Toddler Mode</h3>
+                        <p class="text-[10px] text-slate-500">Comic Sans & Playful UI</p>
+                    </div>
+                </button>
+                
+                <button id="sprint-side-btn" onclick="toggleMode('sprint-mode')" class="w-full flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-red-500 hover:bg-red-50 dark:hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-bolt"></i></div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-sm">Sprint Mode</h3>
+                        <p class="text-[10px] text-slate-500">Urgent Red Theme</p>
+                    </div>
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">External Links</p>
+                <a href="https://www.youtube.com/@EduPulses" target="_blank" class="flex items-center gap-3 p-4 bg-red-600 text-white rounded-2xl font-bold shadow-lg hover:shadow-red-500/40 hover:-translate-y-1 transition-all">
+                    <i class="fab fa-youtube text-xl"></i> Official Channel
+                </a>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t dark:border-slate-800">
+            <button onclick="resetPreferences()" class="w-full py-3 text-xs font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-widest border border-dashed border-slate-300 dark:border-slate-700 rounded-xl">
+                Reset All Settings
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-layout pt-24 pb-20 relative transition-all duration-500">
+        
+        <!-- Mobile Search -->
+        <div class="md:hidden mb-6 relative">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" onkeyup="filterChapters()" id="mobileSearch" placeholder="Search chapters..." 
+                class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-3 pl-10 pr-4 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+
+        <!-- Billboard / Hero -->
+        <div class="billboard relative w-full rounded-[3rem] overflow-hidden shadow-2xl mb-12 animate-float bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 md:p-12">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-900 opacity-20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+            
+            <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/10 mb-6">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Live Updates Active</span>
+                </div>
+                
+                <h1 id="greeting" class="text-4xl md:text-6xl font-black italic tracking-tighter mb-4 leading-tight">Looks Matter.</h1>
+                <p class="text-indigo-100 text-lg md:text-xl font-medium max-w-lg mb-8 leading-relaxed opacity-90">
+                    Welcome to the <b>Masterpiece Edition</b>. Select a mode from the sidebar and it will follow you everywhere.
+                </p>
+                
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="document.getElementById('chapterGrid').scrollIntoView({behavior:'smooth'})" class="px-8 py-3 bg-white text-indigo-600 rounded-2xl font-black shadow-xl hover:scale-105 transition-transform active:scale-95">
+                        START LEARNING
+                    </button>
+                </div>
+            </div>
+            <i class="fas fa-atom absolute -bottom-12 -right-12 text-[16rem] opacity-10 rotate-12"></i>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex flex-wrap gap-2 mb-8 overflow-x-auto hide-scrollbar pb-2">
+            <button onclick="filterCategory('All')" class="filter-btn active-filter px-6 py-2 rounded-full bg-slate-200 dark:bg-slate-800 text-sm font-bold hover:bg-indigo-500 hover:text-white transition-all whitespace-nowrap">All</button>
+            <button onclick="filterCategory('Physics')" class="filter-btn px-6 py-2 rounded-full bg-slate-200 dark:bg-slate-800 text-sm font-bold hover:bg-indigo-500 hover:text-white transition-all whitespace-nowrap">Physics</button>
+            <button onclick="filterCategory('Chemistry')" class="filter-btn px-6 py-2 rounded-full bg-slate-200 dark:bg-slate-800 text-sm font-bold hover:bg-indigo-500 hover:text-white transition-all whitespace-nowrap">Chemistry</button>
+            <button onclick="filterCategory('Biology')" class="filter-btn px-6 py-2 rounded-full bg-slate-200 dark:bg-slate-800 text-sm font-bold hover:bg-indigo-500 hover:text-white transition-all whitespace-nowrap">Biology</button>
+        </div>
+
+        <!-- Grid -->
+        <div id="chapterGrid" class="grid gap-6">
+            <!-- Content injected by JS -->
+        </div>
+
+        <footer class="mt-24 pt-10 border-t border-slate-200 dark:border-slate-800 text-center">
+            <h3 class="font-black text-2xl text-slate-300 dark:text-slate-700 italic uppercase tracking-tighter mb-2">Edu<span class="text-slate-400 dark:text-slate-600">Pulses</span></h3>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Copyright &copy; 2025 Ashwani Yadav - All Rights Reserved</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- 1. DATA ---
+        const chapters = [
+            { id: 1, title: "Matter in Our Surroundings", cat: "Chemistry", tag: "Exam Hot", icon: "vial", color: "text-blue-500", bg: "bg-blue-50" },
+            { id: 2, title: "Is Matter Around Us Pure?", cat: "Chemistry", tag: "Important", icon: "filter", color: "text-indigo-500", bg: "bg-indigo-50" },
+            { id: 3, title: "Atoms and Molecules", cat: "Chemistry", tag: "Foundation", icon: "atom", color: "text-purple-500", bg: "bg-purple-50" },
+            { id: 4, title: "Structure of the Atom", cat: "Chemistry", tag: "Must Read", icon: "microscope", color: "text-pink-500", bg: "bg-pink-50" },
+            { id: 5, title: "The Fundamental Unit of Life", cat: "Biology", tag: "High Weight", icon: "dna", color: "text-green-500", bg: "bg-green-50" },
+            { id: 6, title: "Tissues", cat: "Biology", tag: "Diagrams", icon: "layer-group", color: "text-emerald-500", bg: "bg-emerald-50" },
+            { id: 7, title: "Motion", cat: "Physics", tag: "Numericals", icon: "tachometer-alt", color: "text-amber-500", bg: "bg-amber-50" },
+            { id: 8, title: "Force & Laws of Motion", cat: "Physics", tag: "Conceptual", icon: "gavel", color: "text-orange-500", bg: "bg-orange-50" },
+            { id: 9, title: "Gravitation", cat: "Physics", tag: "Formulas", icon: "globe", color: "text-cyan-500", bg: "bg-cyan-50" },
+            { id: 10, title: "Work and Energy", cat: "Physics", tag: "Easy Marks", icon: "bolt", color: "text-yellow-500", bg: "bg-yellow-50" },
+            { id: 11, title: "Sound", cat: "Physics", tag: "Waves", icon: "volume-up", color: "text-violet-500", bg: "bg-violet-50" },
+            { id: 12, title: "Improvement in Food", cat: "Biology", tag: "General", icon: "seedling", color: "text-lime-500", bg: "bg-lime-50" },
+            { id: 13, title: "Why Do We Fall Ill?", cat: "Biology", tag: "Health", icon: "virus", color: "text-red-500", bg: "bg-red-50" }
+        ];
+
+        // --- 2. RENDER LOGIC ---
+        function renderChapters(data) {
+            const grid = document.getElementById('chapterGrid');
+            grid.innerHTML = '';
+            
+            if (data.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-20 opacity-50"><i class="fas fa-search text-4xl mb-4"></i><p>No chapters found.</p></div>`;
+                return;
+            }
+
+            data.forEach((ch, index) => {
+                const staggerClass = index < 5 ? `animate-fade-in-up transition-all duration-500 delay-[${index * 100}ms]` : '';
+                
+                const card = `
+                <div onclick="window.location.href='ch${ch.id}.html'" class="chapter-card glass-card relative p-6 rounded-[2rem] hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 cursor-pointer group ${staggerClass}">
+                    <div class="absolute top-6 right-6 px-3 py-1 rounded-full ${ch.bg} dark:bg-slate-800 border border-transparent dark:border-slate-700">
+                        <span class="text-[9px] font-black uppercase tracking-widest ${ch.color}">${ch.tag}</span>
+                    </div>
+
+                    <div class="w-14 h-14 rounded-2xl ${ch.bg} dark:bg-slate-800 ${ch.color} flex items-center justify-center text-2xl mb-6 shadow-inner transition-transform group-hover:scale-110 group-hover:rotate-6">
+                        <i class="fas fa-${ch.icon}"></i>
+                    </div>
+
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">${ch.cat}</p>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 leading-tight mb-6 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        ${ch.title}
+                    </h3>
+
+                    <div class="flex items-center text-sm font-bold text-slate-400 group-hover:text-indigo-600 transition-colors">
+                        <span>Read Notes</span>
+                        <i class="fas fa-arrow-right ml-2 text-xs transform group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>`;
+                grid.innerHTML += card;
+            });
+        }
+
+        // --- 3. FILTERING ---
+        function filterChapters() {
+            const query = (document.getElementById('searchInput').value || document.getElementById('mobileSearch').value).toLowerCase();
+            const filtered = chapters.filter(ch => ch.title.toLowerCase().includes(query) || ch.cat.toLowerCase().includes(query));
+            renderChapters(filtered);
+        }
+
+        function filterCategory(cat) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if(btn.innerText === cat) {
+                    btn.classList.add('bg-indigo-600', 'text-white');
+                    btn.classList.remove('bg-slate-200', 'dark:bg-slate-800');
+                } else {
+                    btn.classList.remove('bg-indigo-600', 'text-white');
+                    btn.classList.add('bg-slate-200', 'dark:bg-slate-800');
+                }
+            });
+            if (cat === 'All') renderChapters(chapters);
+            else {
+                const filtered = chapters.filter(ch => ch.cat === cat);
+                renderChapters(filtered);
+            }
+        }
+
+        // --- 4. CORE MODE LOGIC (THE SYNC MAGIC) ---
+        function toggleMode(mode) {
+            const body = document.body;
+            const modes = ['topper-mode', 'toddler-mode', 'sprint-mode'];
+            
+            // Toggle Logic
+            if (body.classList.contains(mode)) {
+                body.classList.remove(mode);
+                localStorage.removeItem('studyMode');
+            } else {
+                body.classList.remove(...modes); // Clean slate
+                body.classList.add(mode);
+                localStorage.setItem('studyMode', mode); // Save to Storage
+            }
+            updateSidebarUI();
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // --- 5. INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderChapters(chapters);
+            updateGreeting();
+
+            // Load Saved Dark Mode
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fas fa-sun';
+            }
+            
+            // Load Saved Study Mode
+            const savedMode = localStorage.getItem('studyMode');
+            if (savedMode) {
+                document.body.classList.add(savedMode);
+                updateSidebarUI();
+            }
+
+            // Load Saved Device View
+            const savedDevice = localStorage.getItem('devicePref') || (window.innerWidth < 768 ? 'mobile' : 'pc');
+            setDevice(savedDevice);
+        });
+
+        // --- 6. UTILITIES ---
+        function updateSidebarUI() {
+            const body = document.body;
+            document.getElementById('topper-side-btn').classList.toggle('border-amber-400', body.classList.contains('topper-mode'));
+            document.getElementById('toddler-side-btn').classList.toggle('border-pink-400', body.classList.contains('toddler-mode'));
+            document.getElementById('sprint-side-btn').classList.toggle('border-red-500', body.classList.contains('sprint-mode'));
+        }
+
+        function setDevice(type) {
+            const body = document.body;
+            const btnPc = document.getElementById('btn-pc');
+            const btnMobile = document.getElementById('btn-mobile');
+
+            if (type === 'mobile') {
+                body.classList.remove('pc-view');
+                body.classList.add('mobile-view');
+                btnMobile.classList.add('bg-indigo-600', 'text-white', 'shadow-lg');
+                btnPc.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg');
+            } else {
+                body.classList.remove('mobile-view');
+                body.classList.add('pc-view');
+                btnPc.classList.add('bg-indigo-600', 'text-white', 'shadow-lg');
+                btnMobile.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg');
+            }
+            localStorage.setItem('devicePref', type);
+        }
+
+        function resetPreferences() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isOpen = !sb.classList.contains('-translate-x-full');
+            
+            if (isOpen) {
+                sb.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-100', 'pointer-events-auto');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                sb.classList.remove('-translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100', 'pointer-events-auto');
+            }
+        }
+
+        function updateGreeting() {
+            const hr = new Date().getHours();
+            const text = hr < 12 ? "Good Morning," : hr < 18 ? "Good Afternoon," : "Good Evening,";
+            document.getElementById('greeting').innerHTML = `${text} <br> <span class="text-white">Future Topper.</span>`;
+        }
+    </script>
+</body>
+</html>

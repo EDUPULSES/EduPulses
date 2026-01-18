@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch 1: Matter | EduPulse Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: '#4f46e5', darkBg: '#020617' },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #020617; color: #f8fafc; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .concept-card { transition: 0.3s; border-left: 4px solid #4f46e5; }
+        .concept-card:hover { transform: translateX(5px); background: rgba(79, 70, 229, 0.1); }
+        details > summary { list-style: none; cursor: pointer; }
+        details > summary::-webkit-details-marker { display: none; }
+        .gradient-text { background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; color: transparent; }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-20">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5 px-6 py-4 flex justify-between items-center">
+        <a href="science9.html" class="flex items-center gap-2 text-slate-400 hover:text-white transition">
+            <i class="fas fa-arrow-left"></i> <span class="font-bold">Dashboard</span>
+        </a>
+        <div class="text-lg font-bold gradient-text">Matter in Our Surroundings</div>
+        <div class="w-8"></div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="pt-32 pb-12 px-6 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-500/20 text-indigo-400 mb-6 text-2xl">
+            <i class="fas fa-cube"></i>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-serif font-bold mb-4">The Nature of Matter</h1>
+        <p class="text-slate-400 max-w-2xl mx-auto">Everything in this universe is made up of material which scientists have named "matter". The air we breathe, the food we eat, stones, clouds, stars, plants and animals.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-6 space-y-12">
+
+        <!-- Section 1: Physical Nature -->
+        <section>
+            <h2 class="text-2xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-sm">01</span>
+                Physical Nature of Matter
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-2xl">
+                    <h3 class="font-bold text-lg mb-2">Particulate Nature</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Matter is made up of particles. It is not continuous like a block of wood, but rather like sand. These particles are extremely small—beyond our imagination.</p>
+                </div>
+                <div class="glass p-6 rounded-2xl">
+                    <h3 class="font-bold text-lg mb-2">Characteristics of Particles</h3>
+                    <ul class="space-y-3 text-sm text-slate-300 mt-2">
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-indigo-500 mt-1"></i> <span>They have <b>space</b> between them (Salt dissolving in water).</span></li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-indigo-500 mt-1"></i> <span>They are <b>continuously moving</b> (Incense stick aroma).</span></li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-indigo-500 mt-1"></i> <span>They <b>attract</b> each other (Force of attraction).</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: States of Matter -->
+        <section>
+            <h2 class="text-2xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-sm">02</span>
+                States of Matter
+            </h2>
+            
+            <div class="space-y-4">
+                <!-- Solid -->
+                <details class="glass rounded-2xl overflow-hidden group">
+                    <summary class="p-6 flex justify-between items-center bg-white/5 hover:bg-white/10 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="fas fa-square"></i></div>
+                            <span class="font-bold text-lg">The Solid State</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-slate-500 group-open:rotate-180 transition"></i>
+                    </summary>
+                    <div class="p-6 pt-0 text-slate-300 text-sm leading-relaxed border-t border-white/5 mt-4">
+                        <p class="mb-4">Solids have a <b>definite shape</b>, distinct boundaries, and <b>fixed volumes</b>. They have negligible compressibility. Solids may break under force but it is difficult to change their shape, so they are rigid.</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-black/30 p-3 rounded-lg">
+                                <b class="block text-white mb-1">Exception: Sponge</b>
+                                We can compress a sponge, yet it is a solid because it has minute holes where air is trapped. Pressing it expels air.
+                            </div>
+                            <div class="bg-black/30 p-3 rounded-lg">
+                                <b class="block text-white mb-1">Exception: Rubber Band</b>
+                                Changes shape under force but regains it. Excessive force breaks it.
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Liquid -->
+                <details class="glass rounded-2xl overflow-hidden group">
+                    <summary class="p-6 flex justify-between items-center bg-white/5 hover:bg-white/10 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400"><i class="fas fa-water"></i></div>
+                            <span class="font-bold text-lg">The Liquid State</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-slate-500 group-open:rotate-180 transition"></i>
+                    </summary>
+                    <div class="p-6 pt-0 text-slate-300 text-sm leading-relaxed border-t border-white/5 mt-4">
+                        <p>Liquids have <b>no fixed shape</b> but have a <b>fixed volume</b>. They take up the shape of the container. Liquids flow and change shape, so they are not rigid but can be called <b>fluid</b>.</p>
+                        <p class="mt-2 text-indigo-300">Diffusion: Solids, liquids, and gases can diffuse into liquids. The rate of diffusion of liquids is higher than solids.</p>
+                    </div>
+                </details>
+
+                <!-- Gas -->
+                <details class="glass rounded-2xl overflow-hidden group">
+                    <summary class="p-6 flex justify-between items-center bg-white/5 hover:bg-white/10 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400"><i class="fas fa-wind"></i></div>
+                            <span class="font-bold text-lg">The Gaseous State</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-slate-500 group-open:rotate-180 transition"></i>
+                    </summary>
+                    <div class="p-6 pt-0 text-slate-300 text-sm leading-relaxed border-t border-white/5 mt-4">
+                        <p>Gases are <b>highly compressible</b> compared to solids and liquids. The LPG cylinder in your home or oxygen supplied to hospitals is compressed gas.</p>
+                        <ul class="list-disc list-inside mt-2 text-slate-400">
+                            <li>Due to high speed of particles and large space, gases show the property of diffusing very fast.</li>
+                            <li>Particles hit the walls of the container, exerting <b>pressure</b>.</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- Section 3: Changing States -->
+        <section>
+            <h2 class="text-2xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-sm">03</span>
+                Can Matter Change its State?
+            </h2>
+            
+            <div class="glass p-8 rounded-2xl text-center">
+                <div class="flex justify-center items-center gap-4 md:gap-8 mb-8 text-sm md:text-base font-bold">
+                    <span class="text-blue-400">SOLID</span>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <span class="text-cyan-400">LIQUID</span>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <span class="text-purple-400">GAS</span>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
+                    <div class="p-4 bg-white/5 rounded-xl">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Melting</div>
+                        <div class="font-bold text-indigo-300">Fusion</div>
+                        <div class="text-xs text-slate-400 mt-2">Solid to Liquid</div>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-xl">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Boiling</div>
+                        <div class="font-bold text-indigo-300">Vaporization</div>
+                        <div class="text-xs text-slate-400 mt-2">Liquid to Gas</div>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-xl">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Direct</div>
+                        <div class="font-bold text-indigo-300">Sublimation</div>
+                        <div class="text-xs text-slate-400 mt-2">Solid to Gas (Camphor)</div>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-xl">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Direct</div>
+                        <div class="font-bold text-indigo-300">Deposition</div>
+                        <div class="text-xs text-slate-400 mt-2">Gas to Solid</div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-4 border border-indigo-500/30 rounded-xl bg-indigo-500/5 text-left">
+                    <h4 class="font-bold text-indigo-400 mb-2"><i class="fas fa-temperature-high mr-2"></i>Latent Heat</h4>
+                    <p class="text-sm text-slate-300">The heat energy which has to be supplied to change the state of a substance is called latent heat. It does not raise the temperature but is used up in overcoming the forces of attraction between particles.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Evaporation -->
+        <section class="pb-10">
+            <h2 class="text-2xl font-bold text-indigo-400 mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-sm">04</span>
+                Evaporation
+            </h2>
+            <div class="glass p-6 rounded-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
+                <p class="mb-6 text-slate-300">A surface phenomenon where liquid changes into vapor at any temperature below its boiling point.</p>
+                
+                <h4 class="font-bold text-white mb-4">Factors Affecting Evaporation:</h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="concept-card bg-white/5 p-4 rounded-r-xl">
+                        <div class="font-bold text-indigo-300">Surface Area</div>
+                        <div class="text-xs text-slate-400">Increases with increase in surface area. (Spreading clothes to dry).</div>
+                    </div>
+                    <div class="concept-card bg-white/5 p-4 rounded-r-xl">
+                        <div class="font-bold text-indigo-300">Temperature</div>
+                        <div class="text-xs text-slate-400">Increases with increase in temperature. (More kinetic energy).</div>
+                    </div>
+                    <div class="concept-card bg-white/5 p-4 rounded-r-xl">
+                        <div class="font-bold text-indigo-300">Humidity</div>
+                        <div class="text-xs text-slate-400">Decreases with increase in humidity. (Air already holds water).</div>
+                    </div>
+                    <div class="concept-card bg-white/5 p-4 rounded-r-xl">
+                        <div class="font-bold text-indigo-300">Wind Speed</div>
+                        <div class="text-xs text-slate-400">Increases with wind speed. (Particles move away).</div>
+                    </div>
+                </div>
+                <div class="mt-6 text-center">
+                    <span class="inline-block px-4 py-2 bg-green-500/10 text-green-400 rounded-full text-sm font-bold border border-green-500/20">
+                        Cooling Effect: Evaporation causes cooling because particles absorb energy from surroundings.
+                    </span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Navigation -->
+    <footer class="fixed bottom-0 w-full glass border-t border-white/5 p-4 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="science9.html" class="text-slate-400 hover:text-white text-sm font-medium"><i class="fas fa-home mr-1"></i> Dashboard</a>
+            <div class="flex gap-4">
+                <span class="text-slate-600 cursor-not-allowed">Prev</span>
+                <a href="ch2.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition">Next Chapter <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

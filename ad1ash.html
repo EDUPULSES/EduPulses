@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg: #05080f; 
+            --accent: #00d4ff; 
+            --error: #ff4444; 
+            --panel: rgba(255, 255, 255, 0.03);
+        }
+
+        body { 
+            background: var(--bg); color: white; font-family: 'Outfit', sans-serif; 
+            height: 100vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
+            overflow: hidden; margin: 0;
+        }
+
+        /* FAKE ERROR PAGE STYLING */
+        h1 { font-size: 8rem; margin: 0; color: var(--error); opacity: 0.2; user-select: none; }
+        
+        #error-desc { 
+            font-size: 1.2rem; opacity: 0.5; max-width: 400px; line-height: 1.6; 
+            cursor: default; user-select: none;
+        }
+
+        .home-btn { 
+            margin-top: 30px; color: var(--accent); text-decoration: none; 
+            border: 1px solid var(--accent); padding: 12px 25px; border-radius: 10px;
+            font-weight: 600; transition: 0.3s; text-transform: uppercase;
+        }
+        .home-btn:hover { background: var(--accent); color: var(--bg); }
+
+        /* HIDDEN LOGIN PANEL */
+        #login-panel {
+            display: none; /* Hidden by default */
+            position: absolute;
+            background: var(--panel); 
+            padding: 40px; border-radius: 24px; 
+            border: 1px solid rgba(0, 212, 255, 0.2); 
+            width: 350px; backdrop-filter: blur(15px);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+        }
+
+        h2 { font-weight: 900; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+
+        input { 
+            width: 100%; padding: 14px; margin: 10px 0; 
+            border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: rgba(0, 0, 0, 0.5); color: white; outline: none; 
+            box-sizing: border-box; font-family: 'Outfit';
+        }
+
+        button.auth-btn { 
+            width: 100%; padding: 14px; background: none; 
+            border: 1px solid var(--accent); color: var(--accent); 
+            border-radius: 12px; cursor: pointer; font-weight: 700; 
+            margin-top: 20px; text-transform: uppercase; transition: 0.3s;
+        }
+        button.auth-btn:hover { background: var(--accent); color: var(--bg); }
+    </style>
+</head>
+<body>
+
+    <div id="fake-page">
+        <h1>404</h1>
+        <p id="error-desc">The requested URL was not found on this server. That’s all we know.</p>
+        <a href="index.html" class="home-btn">Return Home</a>
+    </div>
+
+    <div id="login-panel">
+        <h2>Vault Access</h2>
+        <input type="text" id="user_id" placeholder="IDENTITY ID">
+        <input type="password" id="user_pass" placeholder="SECRET KEY">
+        <button class="auth-btn" onclick="checkAuth()">Authorize</button>
+    </div>
+
+    <script>
+        const errorDesc = document.getElementById('error-desc');
+        const loginPanel = document.getElementById('login-panel');
+        const fakePage = document.getElementById('fake-page');
+
+        // Secret Trigger: Triple Click on the error description
+        errorDesc.addEventListener('click', function(e) {
+            if (e.detail === 3) {
+                fakePage.style.opacity = "0.1"; // Fade out the error
+                loginPanel.style.display = "block"; // Show the vault login
+            }
+        });
+
+        let failCount = 0;
+        function checkAuth() {
+            const id = document.getElementById('user_id').value;
+            const pass = document.getElementById('user_pass').value;
+
+            if (id === "Ashwani1" && pass === "Ashwani#2010") {
+                sessionStorage.setItem("vault_access", "vault1");
+                window.location.href = "vault.html";
+            } else if (id === "EduPulses" && pass === "Edupulses@2025") {
+                sessionStorage.setItem("vault_access", "vault2");
+                window.location.href = "vault2.html";
+            } else if (id === "Coming" && pass === "Notcoming") {
+                sessionStorage.setItem("vault_access", "vault3");
+                window.location.href = "vault3.html";
+            } else {
+                failCount++;
+                if (failCount >= 3) {
+                    document.body.innerHTML = "<h1 style='color:#ff4444; opacity:1; font-size:4rem;'>SYSTEM HALTED</h1>";
+                } else {
+                    alert("ACCESS DENIED.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>

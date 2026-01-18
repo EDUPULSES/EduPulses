@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPulse | Master Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        /* Glassmorphism Card Style */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+        .icon-box {
+            width: 50px; height: 50px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        
+        /* Custom Scrollbar for Tasks */
+        .task-scroll::-webkit-scrollbar { width: 6px; }
+        .task-scroll::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+        .task-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+
+        /* Timer Pulse Animation */
+        .timer-active { animation: pulse-red 2s infinite; color: #fb7185; }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.7; text-shadow: 0 0 10px red; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body class="flex flex-col items-center p-6">
+
+    <header class="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center py-8 mb-4 gap-4">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center font-black italic shadow-lg shadow-indigo-500/30 text-xl">EP</div>
+            <div>
+                <h1 class="text-3xl font-black tracking-tighter uppercase leading-none">Edu<span class="text-indigo-400">Pulses</span></h1>
+                <p class="text-sm text-slate-400 font-semibold tracking-wide">CLASS 9 PRO EDITION</p>
+            </div>
+        </div>
+        <div class="text-right hidden md:block">
+            <p class="text-slate-400 text-sm">Status: <span class="text-emerald-400 font-bold">Online</span></p>
+            <p id="live-clock" class="text-indigo-300 font-bold text-lg mt-1 tracking-wider font-mono">--:--:--</p>
+        </div>
+    </header>
+
+    <main class="w-full max-w-7xl">
+        
+        <h2 class="text-xl font-bold text-slate-300 mb-4 border-b border-slate-700 pb-2">Tactical Tools</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            
+            <div class="glass p-6 rounded-3xl flex flex-col items-center justify-center text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50"></div>
+                <h3 class="text-slate-400 text-sm font-bold uppercase tracking-widest mb-4">Focus Protocol</h3>
+                <div id="timer-display" class="text-6xl font-black font-mono mb-6 text-white">25:00</div>
+                <div class="flex gap-4">
+                    <button onclick="startTimer()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-full font-bold transition shadow-lg shadow-indigo-500/20"><i class="fas fa-play mr-2"></i>Start</button>
+                    <button onclick="resetTimer()" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded-full font-bold transition"><i class="fas fa-redo mr-2"></i>Reset</button>
+                </div>
+                <p class="text-xs text-slate-500 mt-4">Standard 25min Deep Work Cycle</p>
+            </div>
+
+            <div class="glass p-6 rounded-3xl flex flex-col relative overflow-hidden h-64">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-slate-400 text-sm font-bold uppercase tracking-widest">Mission Log</h3>
+                    <span id="task-count" class="text-xs bg-indigo-900 text-indigo-300 px-2 py-1 rounded-md">0 Active</span>
+                </div>
+                
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="task-input" placeholder="Add new directive..." class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition text-white">
+                    <button onclick="addTask()" class="bg-indigo-600 hover:bg-indigo-500 w-10 h-10 rounded-lg flex items-center justify-center transition"><i class="fas fa-plus"></i></button>
+                </div>
+
+                <div id="task-list" class="task-scroll flex-1 overflow-y-auto space-y-2 pr-2">
+                    <p class="text-slate-600 text-xs text-center italic mt-10">No active missions. Systems clear.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold text-slate-300 mb-4 border-b border-slate-700 pb-2">Academic Modules</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            
+            <a href="science9.html" class="glass p-6 rounded-3xl group relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-bl-full -mr-4 -mt-4 transition-all group-hover:bg-emerald-500/20"></div>
+                <div class="icon-box bg-emerald-500/20 text-emerald-400">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-1">Science 9</h3>
+                <p class="text-sm text-slate-400">Complete curriculum: Matter to Food Resources.</p>
+            </a>
+
+            <a href="matns9.html" class="glass p-6 rounded-3xl group relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-bl-full -mr-4 -mt-4 transition-all group-hover:bg-blue-500/20"></div>
+                <div class="icon-box bg-blue-500/20 text-blue-400">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-1">Maths 9</h3>
+                <p class="text-sm text-slate-400">Master theorems, formulas, and calculations.</p>
+            </a>
+
+            <a href="chess.html" class="glass p-6 rounded-3xl group relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 rounded-bl-full -mr-4 -mt-4 transition-all group-hover:bg-purple-500/20"></div>
+                <div class="icon-box bg-purple-500/20 text-purple-400">
+                    <i class="fas fa-chess-knight"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-1">Chess AI</h3>
+                <p class="text-sm text-slate-400">Strategic training engine against AI.</p>
+            </a>
+        </div>
+
+        <h2 class="text-xl font-bold text-slate-300 mb-4 border-b border-slate-700 pb-2">Neural Training (Games)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            
+            <a href="Sudoku.html" class="glass p-6 rounded-2xl group">
+                <div class="icon-box bg-indigo-500/20 text-indigo-400">
+                    <i class="fas fa-border-all"></i>
+                </div>
+                <h3 class="font-bold text-lg">Sudoku</h3>
+                <p class="text-xs text-slate-400 mt-2">Logic & Concentration</p>
+            </a>
+
+            <a href="snake.html" class="glass p-6 rounded-2xl group">
+                <div class="icon-box bg-green-500/20 text-green-400">
+                    <i class="fas fa-staff-snake"></i>
+                </div>
+                <h3 class="font-bold text-lg">Snake</h3>
+                <p class="text-xs text-slate-400 mt-2">Spatial Awareness</p>
+            </a>
+
+            <a href="TicTacToe.html" class="glass p-6 rounded-2xl group">
+                <div class="icon-box bg-red-500/20 text-red-400">
+                    <i class="fas fa-times"></i>
+                </div>
+                <h3 class="font-bold text-lg">Tic-Tac-Toe</h3>
+                <p class="text-xs text-slate-400 mt-2">Forward Strategy</p>
+            </a>
+
+            <a href="2048.html" class="glass p-6 rounded-2xl group">
+                <div class="icon-box bg-yellow-500/20 text-yellow-400">
+                    <i class="fas fa-hashtag"></i>
+                </div>
+                <h3 class="font-bold text-lg">2048</h3>
+                <p class="text-xs text-slate-400 mt-2">Math Patterns</p>
+            </a>
+
+            <a href="MemoryMatch.html" class="glass p-6 rounded-2xl group">
+                <div class="icon-box bg-pink-500/20 text-pink-400">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="font-bold text-lg">Memory Match</h3>
+                <p class="text-xs text-slate-400 mt-2">Visual Recall</p>
+            </a>
+
+            <a href="Minesweeper.html" class="glass p-6 rounded-2xl group">
+                <div class="icon-box bg-orange-500/20 text-orange-400">
+                    <i class="fas fa-bomb"></i>
+                </div>
+                <h3 class="font-bold text-lg">Minesweeper</h3>
+                <p class="text-xs text-slate-400 mt-2">Deductive Reasoning</p>
+            </a>
+
+            <a href="WhackAMole.html" class="glass p-6 rounded-2xl group">
+                <div class="icon-box bg-cyan-500/20 text-cyan-400">
+                    <i class="fas fa-hammer"></i>
+                </div>
+                <h3 class="font-bold text-lg">Whack-A-Mole</h3>
+                <p class="text-xs text-slate-400 mt-2">Reflex Speed</p>
+            </a>
+
+            <a href="Breakout.html" class="glass p-6 rounded-2xl group">
+                <div class="icon-box bg-teal-500/20 text-teal-400">
+                    <i class="fas fa-table-tennis"></i>
+                </div>
+                <h3 class="font-bold text-lg">Breakout</h3>
+                <p class="text-xs text-slate-400 mt-2">Hand-Eye Coord</p>
+            </a>
+
+        </div>
+
+        <div class="mt-16 text-center">
+            <a href="https://ashwani34.github.io/EduPulse-class9-science/" target="_blank" class="inline-flex items-center gap-2 bg-white text-indigo-950 px-8 py-3 rounded-full font-bold text-sm hover:shadow-2xl hover:scale-105 transition-all">
+                OFFICIAL CHANNEL <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    </main>
+
+    <footer class="mt-auto py-10 text-center text-slate-600 text-sm">
+        <p>
+            &copy; 2024 Ashwani Yadav. All rights reserved<span id="secret-trigger" class="cursor-default select-none hover:text-slate-500" title="">.</span>
+        </p>
+        <p class="mt-1 text-xs opacity-50">Contact: ashwani9768yadav@gmail.com</p>
+    </footer>
+
+    <script>
+        // --- 1. CLOCK LOGIC ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-clock').textContent = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- 2. FOCUS TIMER LOGIC ---
+        let timerInterval;
+        let timeLeft = 25 * 60; // 25 minutes
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const display = document.getElementById('timer-display');
+            display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft === 0) {
+                display.classList.add('timer-active'); // Add pulse effect when done
+            } else {
+                display.classList.remove('timer-active');
+            }
+        }
+
+        function startTimer() {
+            if (isRunning) return;
+            isRunning = true;
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    alert("Focus Session Complete! Take a break.");
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+        }
+
+        // --- 3. MISSION LOG (TODO) LOGIC ---
+        const taskInput = document.getElementById('task-input');
+        const taskList = document.getElementById('task-list');
+        const taskCount = document.getElementById('task-count');
+
+        // Load tasks from Local Storage on startup
+        let tasks = JSON.parse(localStorage.getItem('eduPulseTasks')) || [];
+        renderTasks();
+
+        function addTask() {
+            const text = taskInput.value.trim();
+            if (text) {
+                tasks.push({ text: text, done: false });
+                saveTasks();
+                renderTasks();
+                taskInput.value = '';
+            }
+        }
+
+        // Allow pressing "Enter" to add task
+        taskInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') addTask();
+        });
+
+        function toggleTask(index) {
+            tasks[index].done = !tasks[index].done;
+            saveTasks();
+            renderTasks();
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            saveTasks();
+            renderTasks();
+        }
+
+        function saveTasks() {
+            localStorage.setItem('eduPulseTasks', JSON.stringify(tasks));
+        }
+
+        function renderTasks() {
+            taskList.innerHTML = '';
+            let activeCount = 0;
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<p class="text-slate-600 text-xs text-center italic mt-10">No active missions. Systems clear.</p>';
+            } else {
+                tasks.forEach((task, index) => {
+                    if (!task.done) activeCount++;
+                    
+                    const div = document.createElement('div');
+                    div.className = `flex justify-between items-center bg-slate-800/50 p-2 rounded-lg border border-slate-700/50 ${task.done ? 'opacity-50' : ''}`;
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <button onclick="toggleTask(${index})" class="text-indigo-400 hover:text-indigo-300">
+                                <i class="${task.done ? 'fas fa-check-circle' : 'far fa-circle'}"></i>
+                            </button>
+                            <span class="text-sm truncate ${task.done ? 'line-through text-slate-500' : 'text-slate-200'}">${task.text}</span>
+                        </div>
+                        <button onclick="deleteTask(${index})" class="text-slate-500 hover:text-red-400 ml-2 text-xs">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    taskList.appendChild(div);
+                });
+            }
+            taskCount.textContent = `${activeCount} Active`;
+        }
+
+        // --- 4. STEALTH ADMIN LOGIC ---
+        const trigger = document.getElementById('secret-trigger');
+        trigger.addEventListener('click', function(e) {
+            if (e.detail === 3) window.location.href = "admin_1ashwani.html";
+        });
+    </script>
+
+</body>
+</html>

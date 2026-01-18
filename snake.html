@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Retro Snake: Brain Trainer</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --accent: #22c55e;
+            --apple: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            background: var(--bg-color); color: var(--text-main); 
+            margin: 0; height: 100vh; overflow: hidden;
+        }
+
+        /* Home Button */
+        .home-link {
+            position: absolute; top: 20px; left: 20px;
+            text-decoration: none; color: var(--text-main); background: var(--panel-bg);
+            padding: 10px 20px; border-radius: 8px; border: 1px solid var(--accent);
+            font-weight: bold; transition: 0.3s;
+        }
+        .home-link:hover { background: var(--accent); color: #000; }
+
+        /* Layout Container */
+        .game-wrapper { display: flex; gap: 30px; align-items: flex-start; }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 220px; background: var(--panel-bg); padding: 25px;
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .stat-group { border-bottom: 1px solid #334155; padding-bottom: 15px; }
+        .stat-label { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-top: 5px; }
+
+        /* Speed Dropdown */
+        select {
+            width: 100%; padding: 10px; background: #0f172a; color: white;
+            border: 1px solid #334155; border-radius: 5px; cursor: pointer;
+        }
+
+        /* Start Button */
+        #startBtn {
+            width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold;
+            background: var(--accent); color: #0f172a; border: none;
+            border-radius: 8px; cursor: pointer; transition: 0.2s;
+        }
+        #startBtn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4); }
+        #startBtn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; transform: none; }
+
+        /* Game Board */
+        canvas {
+            border: 8px solid #334155; border-radius: 10px;
+            background-color: #020617; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-link">🏠 EXIT TO HOME</a>
+
+    <div class="game-wrapper">
+        <canvas id="gameCanvas" width="440" height="440"></canvas>
+
+        <div class="sidebar">
+            <div class="stat-group">
+                <div class="stat-label">Current Score</div>
+                <div id="score" class="stat-value">0</div>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-label">Highest Score</div>
+                <div id="highScore" class="stat-value">0</div>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-label">Difficulty</div>
+                <select id="speedSelect">
+                    <option value="180">Level 1: Easy</option>
+                    <option value="140" selected>Level 2: Normal</option>
+                    <option value="100">Level 3: Fast</option>
+                    <option value="70">Level 4: Pro</option>
+                    <option value="45">Level 5: Expert</option>
+                </select>
+            </div>
+
+            <button id="startBtn" onclick="startGame()">START MISSION</button>
+            <div style="font-size: 0.75rem; color: var(--text-dim); text-align: center;">
+                Use Arrow Keys to Navigate
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('highScore');
+        const speedSelect = document.getElementById('speedSelect');
+        const startBtn = document.getElementById('startBtn');
+
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
+        
+        let score = 0;
+        let highScore = localStorage.getItem('snakeHighScore') || 0;
+        highScoreElement.innerText = highScore;
+
+        let gameInterval;
+        let isGameRunning = false;
+        let snake = []; 
+        let dx = 1; 
+        let dy = 0;
+        let appleX, appleY;
+        
+        // BUG FIX #1: Input Lock to prevent "suicide" turns
+        let directionLock = false;
+
+        function resetGameVars() {
+            snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
+            dx = 1; dy = 0;
+            directionLock = false; // Reset lock
+            score = 0;
+            scoreElement.innerText = score;
+            placeApple();
+        }
+
+        function startGame() {
+            if(isGameRunning) return;
+            resetGameVars();
+            isGameRunning = true;
+            startBtn.disabled = true;
+            speedSelect.disabled = true;
+            
+            const speed = parseInt(speedSelect.value);
+            gameInterval = setInterval(gameLoop, speed); 
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            // Unlock input AFTER the move has been processed
+            directionLock = false; 
+        }
+
+        function update() {
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+
+            // Wall Collision
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+                gameOver(); return;
+            }
+
+            // Self Collision
+            for (let part of snake) {
+                if (head.x === part.x && head.y === part.y) {
+                    gameOver(); return;
+                }
+            }
+
+            snake.unshift(head);
+
+            // Eating Apple
+            if (head.x === appleX && head.y === appleY) {
+                score += 10;
+                scoreElement.innerText = score;
+                placeApple();
+            } else {
+                snake.pop();
+            }
+        }
+
+        function draw() {
+            // Background
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Apple (Glow effect)
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#ef4444';
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(appleX * gridSize + 10, appleY * gridSize + 10, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Snake
+            snake.forEach((part, index) => {
+                ctx.fillStyle = index === 0 ? '#4ade80' : '#166534';
+                ctx.strokeStyle = '#020617';
+                ctx.lineWidth = 2;
+                ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize, gridSize);
+                ctx.strokeRect(part.x * gridSize, part.y * gridSize, gridSize, gridSize);
+            });
+        }
+
+        // BUG FIX #2: Crash-Proof Apple Spawning
+        function placeApple() {
+            let availableSpots = [];
+            
+            // Find all empty grid cells
+            for (let x = 0; x < tileCount; x++) {
+                for (let y = 0; y < tileCount; y++) {
+                    // Check if snake occupies this spot
+                    let isOccupied = false;
+                    for(let part of snake) {
+                        if(part.x === x && part.y === y) {
+                            isOccupied = true; 
+                            break;
+                        }
+                    }
+                    if(!isOccupied) availableSpots.push({x, y});
+                }
+            }
+
+            // If screen is full, player wins!
+            if (availableSpots.length === 0) {
+                gameOver(true);
+                return;
+            }
+
+            // Pick a random available spot
+            let spot = availableSpots[Math.floor(Math.random() * availableSpots.length)];
+            appleX = spot.x;
+            appleY = spot.y;
+        }
+
+        function gameOver(won = false) {
+            clearInterval(gameInterval);
+            isGameRunning = false;
+            startBtn.disabled = false;
+            speedSelect.disabled = false;
+            
+            if(score > highScore) {
+                highScore = score;
+                localStorage.setItem('snakeHighScore', highScore);
+                highScoreElement.innerText = highScore;
+                alert("🎉 NEW RECORD: " + score);
+            } else if (won) {
+                alert("🏆 YOU WON! SCREEN CLEARED! Score: " + score);
+            } else {
+                alert("GAME OVER! Score: " + score);
+            }
+            startBtn.innerText = "RETRY MISSION";
+        }
+
+        document.addEventListener('keydown', e => {
+            // Prevent input if we already processed a turn this frame
+            if(directionLock) return;
+
+            if (e.keyCode === 37 && dx === 0) { dx = -1; dy = 0; directionLock = true; }
+            else if (e.keyCode === 38 && dy === 0) { dx = 0; dy = -1; directionLock = true; }
+            else if (e.keyCode === 39 && dx === 0) { dx = 1; dy = 0; directionLock = true; }
+            else if (e.keyCode === 40 && dy === 0) { dx = 0; dy = 1; directionLock = true; }
+            
+            if([37,38,39,40].includes(e.keyCode)) e.preventDefault();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch 6: Tissues | EduPulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: '#10b981', darkBg: '#0f172a' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], toddler: ['"Comic Sans MS"', 'cursive'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: 0.3s; }
+        body.toddler-mode { font-family: 'Comic Sans MS', cursive !important; }
+        body.topper-mode { filter: grayscale(100%) contrast(1.1); background-color: #fff !important; }
+        body.topper-mode.dark { background-color: #020617 !important; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.5); }
+        .dark .glass-card { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-darkBg dark:text-slate-200">
+
+    <nav class="sticky top-0 z-50 glass-card border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="science9.html" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i class="fas fa-arrow-left text-green-600"></i>
+                </a>
+                <div>
+                    <span class="text-[10px] font-black uppercase text-green-500 tracking-tighter">Biology • Chapter 6</span>
+                    <h1 class="font-bold text-lg leading-tight">Tissues</h1>
+                </div>
+            </div>
+            <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-green-50 dark:bg-slate-800 text-green-600"><i class="fas fa-moon" id="themeIcon"></i></button>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-12 space-y-12">
+        <header class="text-center space-y-4">
+            <div class="inline-block p-4 bg-green-600 text-white rounded-3xl shadow-xl shadow-green-500/20 mb-4">
+                <i class="fas fa-layer-group text-4xl"></i>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight">Tissues</h2>
+            <p class="text-lg opacity-70 max-w-2xl mx-auto">Groups of cells with similar structure and function.</p>
+        </header>
+
+        <section class="glass-card p-8 rounded-[2rem] space-y-6">
+            <h3 class="text-2xl font-black border-l-4 border-green-500 pl-4">Plant Tissues</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-bold text-green-600">Meristematic</h4>
+                    <p class="text-sm">Dividing tissues. Responsible for growth. (Apical, Lateral, Intercalary).</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-green-600">Permanent</h4>
+                    <p class="text-sm">Lost ability to divide.</p>
+                    <ul class="text-xs list-disc list-inside mt-2 opacity-70">
+                        <li><b>Simple:</b> Parenchyma, Collenchyma, Sclerenchyma</li>
+                        <li><b>Complex:</b> Xylem (Water), Phloem (Food)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <h3 class="text-2xl font-black border-l-4 border-green-500 pl-4">Animal Tissues</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div class="glass-card p-4 rounded-xl border-b-4 border-green-400">
+                    <i class="fas fa-shield-alt text-2xl mb-2 text-green-500"></i>
+                    <h5 class="font-bold text-sm">Epithelial</h5>
+                    <p class="text-[10px]">Protection (Skin)</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-b-4 border-red-400">
+                    <i class="fas fa-bone text-2xl mb-2 text-red-500"></i>
+                    <h5 class="font-bold text-sm">Connective</h5>
+                    <p class="text-[10px]">Blood, Bone</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-b-4 border-orange-400">
+                    <i class="fas fa-dumbbell text-2xl mb-2 text-orange-500"></i>
+                    <h5 class="font-bold text-sm">Muscular</h5>
+                    <p class="text-[10px]">Movement</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-b-4 border-purple-400">
+                    <i class="fas fa-brain text-2xl mb-2 text-purple-500"></i>
+                    <h5 class="font-bold text-sm">Nervous</h5>
+                    <p class="text-[10px]">Impulses (Neuron)</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="flex justify-between items-center py-10">
+            <a href="ch5.html" class="text-sm font-bold opacity-50 hover:opacity-100"><i class="fas fa-chevron-left mr-2"></i> Prev</a>
+            <a href="ch7.html" class="p-4 px-8 bg-slate-900 dark:bg-slate-700 text-white rounded-2xl font-bold shadow-lg hover:bg-green-600 transition-all">Next <i class="fas fa-chevron-right ml-2"></i></a>
+        </footer>
+
+    </main>
+    <script>
+        function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark')); updateUI(); }
+        function updateUI() { const isDark = document.documentElement.classList.contains('dark'); document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon'; }
+        window.addEventListener('DOMContentLoaded', () => { if(localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark'); const savedMode = localStorage.getItem('studyMode'); if(savedMode) document.body.classList.add(savedMode); updateUI(); });
+    </script>
+</body>
+</html>

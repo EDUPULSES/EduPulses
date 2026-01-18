@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch 8: Force & Motion | EduPulse Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: '#f97316', darkBg: '#020617' },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #020617; color: #f8fafc; }
+        .glass { background: rgba(249, 115, 22, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(249, 115, 22, 0.1); }
+        .law-card { transition: 0.3s; position: relative; overflow: hidden; }
+        .law-card:hover { transform: translateY(-5px); border-color: #f97316; }
+        .math-box { font-family: 'Courier New', monospace; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border-left: 3px solid #f97316; }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-20">
+
+    <nav class="fixed top-0 w-full z-50 glass border-b border-orange-500/10 px-6 py-4 flex justify-between items-center">
+        <a href="science9.html" class="flex items-center gap-2 text-slate-400 hover:text-orange-400 transition">
+            <i class="fas fa-arrow-left"></i> <span class="font-bold">Dashboard</span>
+        </a>
+        <div class="text-lg font-bold text-orange-400">Force & Laws of Motion</div>
+        <div class="w-8"></div>
+    </nav>
+
+    <header class="pt-32 pb-12 px-6 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-500/20 text-orange-400 mb-6 text-2xl">
+            <i class="fas fa-rocket"></i>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-serif font-bold mb-4">Newton's Laws</h1>
+        <p class="text-slate-400 max-w-2xl mx-auto">Understanding why things move. Force is the push or pull that changes the state of rest or motion of a body.</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 space-y-12">
+
+        <!-- Force Types -->
+        <section class="grid md:grid-cols-2 gap-6">
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="font-bold text-lg text-white mb-2">Balanced Forces</h3>
+                <p class="text-sm text-slate-400">If the resultant of all forces acting on a body is zero, the forces are balanced. They <b>cannot</b> change the state of motion, but can change shape (squeezing a balloon).</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-orange-500/30">
+                <h3 class="font-bold text-lg text-orange-400 mb-2">Unbalanced Forces</h3>
+                <p class="text-sm text-slate-400">If the resultant force is not zero. These forces produce a change in the state of rest or motion. This causes <b>acceleration</b>.</p>
+            </div>
+        </section>
+
+        <!-- First Law -->
+        <section class="law-card glass p-8 rounded-3xl">
+            <div class="absolute -right-10 -top-10 text-9xl font-bold text-white/5 select-none">1</div>
+            <h2 class="text-2xl font-bold text-orange-400 mb-4">First Law of Motion (Inertia)</h2>
+            <p class="text-lg text-white mb-6 italic">"An object remains in a state of rest or of uniform motion in a straight line unless compelled to change that state by an applied force."</p>
+            
+            <div class="bg-black/30 p-4 rounded-xl mb-4">
+                <h4 class="font-bold text-sm text-slate-300 mb-2">Inertia</h4>
+                <p class="text-sm text-slate-400">The natural tendency of objects to resist a change in their state of motion. Mass is the measure of inertia. Heavier object = More Inertia.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 text-sm text-slate-400">
+                <div class="flex gap-3">
+                    <i class="fas fa-bus text-orange-500 mt-1"></i>
+                    <span><b>Bus starts suddenly:</b> Passengers fall backward (Feet move with bus, upper body stays at rest).</span>
+                </div>
+                <div class="flex gap-3">
+                    <i class="fas fa-hand-paper text-orange-500 mt-1"></i>
+                    <span><b>Bus stops suddenly:</b> Passengers fall forward (Feet stop, upper body continues motion).</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Second Law -->
+        <section class="law-card glass p-8 rounded-3xl">
+            <div class="absolute -right-10 -top-10 text-9xl font-bold text-white/5 select-none">2</div>
+            <h2 class="text-2xl font-bold text-orange-400 mb-4">Second Law of Motion</h2>
+            <p class="text-lg text-white mb-6 italic">"The rate of change of momentum of an object is proportional to the applied unbalanced force in the direction of force."</p>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="math-box mb-4 text-lg">$$ F = m \times a $$</div>
+                    <p class="text-sm text-slate-400">Where <b>F</b> is Force, <b>m</b> is Mass, and <b>a</b> is Acceleration.<br>Unit of Force: <b>Newton (N)</b>.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-300 mb-2">Real Life Application</h4>
+                    <p class="text-sm text-slate-400 mb-2"><b>Catching a ball:</b> A cricketer pulls his hands back while catching a fast ball. This increases the <b>time</b> for the velocity to drop to zero, reducing acceleration and thus reducing the Force impact on hands.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Third Law -->
+        <section class="law-card glass p-8 rounded-3xl">
+            <div class="absolute -right-10 -top-10 text-9xl font-bold text-white/5 select-none">3</div>
+            <h2 class="text-2xl font-bold text-orange-400 mb-4">Third Law of Motion</h2>
+            <p class="text-lg text-white mb-6 italic">"To every action, there is an equal and opposite reaction."</p>
+            
+            <ul class="space-y-3 text-sm text-slate-300">
+                <li class="flex items-center gap-3"><i class="fas fa-check-circle text-orange-500"></i> These two forces always act on <b>different objects</b>.</li>
+                <li class="flex items-center gap-3"><i class="fas fa-fighter-jet text-orange-500"></i> <b>Rocket:</b> Gases pushed down (Action) -> Rocket pushed up (Reaction).</li>
+                <li class="flex items-center gap-3"><i class="fas fa-person-walking text-orange-500"></i> <b>Walking:</b> We push ground back -> Ground pushes us forward.</li>
+                <li class="flex items-center gap-3"><i class="fas fa-crosshairs text-orange-500"></i> <b>Gun Recoil:</b> Bullet goes forward -> Gun kicks backward.</li>
+            </ul>
+        </section>
+
+        <!-- Conservation of Momentum -->
+        <section class="glass p-8 rounded-3xl text-center">
+            <h2 class="text-xl font-bold text-white mb-4">Law of Conservation of Momentum</h2>
+            <p class="text-sm text-slate-400 mb-6">In an isolated system (no external force), the total momentum remains conserved.</p>
+            <div class="math-box inline-block text-xl">
+                $$ m_1u_1 + m_2u_2 = m_1v_1 + m_2v_2 $$
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Total momentum before collision = Total momentum after collision</p>
+        </section>
+
+    </main>
+
+    <footer class="fixed bottom-0 w-full glass border-t border-orange-500/10 p-4 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="ch7.html" class="text-slate-400 hover:text-white text-sm font-medium"><i class="fas fa-arrow-left mr-1"></i> Prev</a>
+            <a href="ch9.html" class="bg-orange-600 hover:bg-orange-500 text-white px-6 py-2 rounded-full font-bold shadow-lg shadow-orange-500/20 transition">Next Chapter <i class="fas fa-arrow-right ml-1"></i></a>
+        </div>
+    </footer>
+
+</body>
+</html>

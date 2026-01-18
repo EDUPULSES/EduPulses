@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Neural Tic-Tac-Toe: Levels</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --accent: #38bdf8;
+            --x-color: #fb7185;
+            --o-color: #38bdf8;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            background: var(--bg-color); color: var(--text-main); 
+            margin: 0; height: 100vh; overflow: hidden;
+        }
+
+        .home-link {
+            position: absolute; top: 20px; left: 20px;
+            text-decoration: none; color: var(--text-main); background: var(--panel-bg);
+            padding: 10px 20px; border-radius: 8px; border: 1px solid var(--accent);
+            font-weight: bold; transition: 0.3s;
+        }
+        .home-link:hover { background: var(--accent); color: #000; }
+
+        .game-wrapper { display: flex; gap: 40px; align-items: center; }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 240px; background: var(--panel-bg); padding: 25px;
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .stat-group { border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .stat-label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
+        .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+
+        select {
+            width: 100%; padding: 10px; background: #0f172a; color: white;
+            border: 1px solid var(--accent); border-radius: 5px; cursor: pointer;
+        }
+
+        /* The Tic Tac Toe Grid */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 110px);
+            grid-template-rows: repeat(3, 110px);
+            gap: 12px;
+            background: #334155;
+            padding: 12px;
+            border-radius: 15px;
+        }
+
+        .cell {
+            background: var(--bg-color);
+            border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 3rem; font-weight: bold; cursor: pointer;
+            transition: 0.2s; height: 110px; width: 110px;
+        }
+
+        .cell:hover { background: #1e293b; transform: scale(1.02); }
+        .cell.x { color: var(--x-color); }
+        .cell.o { color: var(--o-color); }
+
+        #resetBtn {
+            width: 100%; padding: 15px; font-weight: bold;
+            background: var(--accent); color: #0f172a; border: none;
+            border-radius: 8px; cursor: pointer; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-link">🏠 EXIT TO HOME</a>
+
+    <div class="game-wrapper">
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+
+        <div class="sidebar">
+            <div class="stat-group">
+                <div class="stat-label">Brain Points</div>
+                <div id="points" class="stat-value">0</div>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-label">Select Level</div>
+                <select id="difficulty">
+                    <option value="easy">Level 1: Easy</option>
+                    <option value="normal" selected>Level 2: Normal</option>
+                    <option value="hard">Level 3: Impossible</option>
+                </select>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-label">Status</div>
+                <div id="status" class="stat-value" style="font-size: 1.1rem;">Your Turn (X)</div>
+            </div>
+
+            <button id="resetBtn" onclick="resetGame()">RESET GAME</button>
+        </div>
+    </div>
+
+    <script>
+        let points = 0;
+        let board = ["", "", "", "", "", "", "", "", ""];
+        let gameActive = true;
+        const huPlayer = "X";
+        const aiPlayer = "O";
+
+        const cells = document.querySelectorAll('.cell');
+        const difficultySelect = document.getElementById('difficulty');
+
+        const winConditions = [
+            [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]
+        ];
+
+        cells.forEach(cell => cell.addEventListener('click', e => {
+            const idx = e.target.dataset.index;
+            if (board[idx] !== "" || !gameActive) return;
+            
+            move(idx, huPlayer);
+            if (gameActive) {
+                document.getElementById('status').innerText = "AI Thinking...";
+                setTimeout(aiMove, 500);
+            }
+        }));
+
+        function move(idx, player) {
+            board[idx] = player;
+            cells[idx].innerText = player;
+            cells[idx].classList.add(player.toLowerCase());
+            if (checkWin(board, player)) {
+                endGame(player === huPlayer ? "WIN" : "LOSE");
+            } else if (board.every(s => s !== "")) {
+                endGame("DRAW");
+            }
+        }
+
+        function aiMove() {
+            const level = difficultySelect.value;
+            let moveIdx;
+
+            if (level === "easy") {
+                moveIdx = randomMove();
+            } else if (level === "normal") {
+                moveIdx = Math.random() > 0.5 ? minimax(board, aiPlayer).index : randomMove();
+            } else {
+                moveIdx = minimax(board, aiPlayer).index;
+            }
+
+            move(moveIdx, aiPlayer);
+            if (gameActive) document.getElementById('status').innerText = "Your Turn (X)";
+        }
+
+        function randomMove() {
+            let avail = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+            return avail[Math.floor(Math.random() * avail.length)];
+        }
+
+        function checkWin(b, p) {
+            return winConditions.some(c => c.every(i => b[i] === p));
+        }
+
+        function endGame(res) {
+            gameActive = false;
+            const s = document.getElementById('status');
+            if (res === "WIN") { s.innerText = "YOU WIN!"; updateScore(10); }
+            else if (res === "LOSE") { s.innerText = "AI WINS!"; updateScore(-5); }
+            else { s.innerText = "DRAW!"; updateScore(2); }
+        }
+
+        function updateScore(n) {
+            points += n;
+            document.getElementById('points').innerText = points;
+        }
+
+        // --- MINIMAX ALGORITHM (THE BRAIN) ---
+        function minimax(newBoard, player) {
+            let availSpots = newBoard.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+
+            if (checkWin(newBoard, huPlayer)) return {score: -10};
+            if (checkWin(newBoard, aiPlayer)) return {score: 10};
+            if (availSpots.length === 0) return {score: 0};
+
+            let moves = [];
+            for (let i = 0; i < availSpots.length; i++) {
+                let move = {};
+                move.index = availSpots[i];
+                newBoard[availSpots[i]] = player;
+
+                if (player === aiPlayer) {
+                    move.score = minimax(newBoard, huPlayer).score;
+                } else {
+                    move.score = minimax(newBoard, aiPlayer).score;
+                }
+
+                newBoard[availSpots[i]] = "";
+                moves.push(move);
+            }
+
+            let bestMove;
+            if (player === aiPlayer) {
+                let bestScore = -10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score > bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            } else {
+                let bestScore = 10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score < bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            }
+            return moves[bestMove];
+        }
+
+        function resetGame() {
+            board = ["", "", "", "", "", "", "", "", ""];
+            gameActive = true;
+            document.getElementById('status').innerText = "Your Turn (X)";
+            cells.forEach(c => { c.innerText = ""; c.classList.remove('x', 'o'); });
+        }
+    </script>
+</body>
+</html>

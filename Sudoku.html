@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Retro Sudoku: Brain Trainer</title>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --grid-bg: #16213e;
+            --cell-size: 45px;
+            --accent: #00d2ff;
+            --win-color: #4cd137;
+            --lose-color: #e84118;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; flex-direction: column; align-items: center; 
+            background: var(--bg-color); color: white; margin: 0; padding-top: 20px;
+        }
+
+        /* Home Button in Top Left Corner */
+        .home-link {
+            position: absolute; top: 20px; left: 20px;
+            text-decoration: none; color: white; background: #0f3460;
+            padding: 8px 15px; border-radius: 5px; border: 1px solid var(--accent);
+            font-size: 0.9rem; transition: 0.3s;
+        }
+        .home-link:hover { background: var(--accent); color: #000; }
+
+        .stats-container { display: flex; gap: 40px; margin-bottom: 20px; }
+        .stat-box { text-align: center; background: #0f3460; padding: 10px 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .stat-label { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); }
+        .stat-value { font-size: 1.5rem; font-weight: bold; }
+
+        /* The Grid */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(9, var(--cell-size)); 
+            grid-template-rows: repeat(9, var(--cell-size)); 
+            border: 4px solid #000; background-color: #000;
+        }
+
+        input { 
+            width: var(--cell-size); height: var(--cell-size); 
+            text-align: center; font-size: 20px; border: 0.5px solid #222; 
+            background: #ecf0f1; outline: none; box-sizing: border-box;
+        }
+
+        input:focus { background: var(--accent) !important; color: white; }
+        .invalid { background: #ff7675 !important; color: white; }
+        input:disabled { background-color: #95a5a6; color: #1a1a2e; font-weight: bold; }
+
+        /* Thick 3x3 Borders */
+        input:nth-child(3n) { border-right: 3px solid #000; }
+        input:nth-child(9n) { border-right: none; }
+        .grid input:nth-child(n+19):nth-child(-n+27), 
+        .grid input:nth-child(n+46):nth-child(-n+54) { border-bottom: 3px solid #000; }
+
+        .controls { margin-top: 30px; display: flex; gap: 15px; }
+        button { 
+            padding: 12px 20px; cursor: pointer; border-radius: 6px; border: none;
+            font-weight: bold; transition: 0.2s;
+        }
+        .btn-solve { background: var(--lose-color); color: white; }
+        .btn-next { background: var(--win-color); color: white; }
+        
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.02);} 100% {transform: scale(1);} }
+        .winner-grid { animation: pulse 0.5s infinite; border-color: var(--win-color) !important; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-link">🏠 EXIT TO HOME</a>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-label">Brain Score</div>
+            <div id="scoreValue" class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Level</div>
+            <div id="stageNum" class="stat-value">1 / 100</div>
+        </div>
+    </div>
+
+    <div class="grid" id="sudoku-grid"></div>
+
+    <div class="controls">
+        <button class="btn-solve" onclick="autoSolve()">Auto-Solve (-10 PTS)</button>
+        <button class="btn-next" onclick="nextStage()">Next Level</button>
+        <button style="background:#555; color:white;" onclick="resetBoard()">Clear</button>
+    </div>
+
+    <script>
+        const gridElement = document.getElementById('sudoku-grid');
+        let currentStage = 1;
+        let score = 0;
+
+        const baseStages = [
+            [5,3,0,0,7,0,0,0,0,6,0,0,1,9,5,0,0,0,0,9,8,0,0,0,0,6,0,8,0,0,0,6,0,0,0,3,4,0,0,8,0,3,0,0,1,7,0,0,0,2,0,0,0,6,0,6,0,0,0,0,2,8,0,0,0,0,4,1,9,0,0,5,0,0,0,0,8,0,0,7,9],
+            [0,0,0,2,6,0,7,0,1,6,8,0,0,7,0,0,9,0,1,9,0,0,0,4,5,0,0,8,2,0,1,0,0,0,4,0,0,0,4,6,0,2,9,0,0,0,5,0,0,0,3,0,2,8,0,0,9,3,0,0,0,7,4,0,4,0,0,5,0,0,3,6,7,0,3,0,1,8,0,0,0]
+        ];
+
+        function createGrid() {
+            gridElement.innerHTML = '';
+            gridElement.classList.remove('winner-grid');
+            let puzzle = baseStages[(currentStage - 1) % baseStages.length];
+            
+            for (let i = 0; i < 81; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.maxLength = 1;
+                input.value = puzzle[i] === 0 ? '' : puzzle[i];
+                if (puzzle[i] !== 0) input.disabled = true;
+                
+                input.oninput = (e) => {
+                    const val = e.target.value;
+                    if (!/[1-9]/.test(val)) { e.target.value = ''; return; }
+                    handleInput(e.target, parseInt(val), i);
+                };
+                gridElement.appendChild(input);
+            }
+        }
+
+        function handleInput(element, num, index) {
+            let board = getBoard();
+            let row = Math.floor(index / 9);
+            let col = index % 9;
+            board[row][col] = 0; 
+            
+            if (!isValid(board, row, col, num)) {
+                element.classList.add('invalid');
+            } else {
+                element.classList.remove('invalid');
+                updateScore(10); // ADD 10 POINTS FOR CORRECT MOVE
+                checkWin();
+            }
+        }
+
+        function updateScore(pts) {
+            score += pts;
+            document.getElementById('scoreValue').innerText = score;
+            document.getElementById('scoreValue').style.color = pts > 0 ? '#4cd137' : '#e84118';
+        }
+
+        function autoSolve() {
+            updateScore(-10); // LOSE 10 POINTS
+            let board = getBoard();
+            if (solver(board)) {
+                const inputs = gridElement.querySelectorAll('input');
+                board.flat().forEach((val, i) => {
+                    inputs[i].value = val;
+                    inputs[i].classList.remove('invalid');
+                });
+                checkWin();
+            }
+        }
+
+        // --- Logic Functions ---
+        function isValid(board, row, col, num) {
+            for (let x = 0; x < 9; x++) if (board[row][x] === num || board[x][col] === num) return false;
+            let sr = row - row % 3, sc = col - col % 3;
+            for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (board[i + sr][j + sc] === num) return false;
+            return true;
+        }
+
+        function getBoard() {
+            const inputs = gridElement.querySelectorAll('input');
+            let board = [];
+            for (let i = 0; i < 9; i++) {
+                let row = [];
+                for (let j = 0; j < 9; j++) {
+                    let val = inputs[i * 9 + j].value;
+                    row.push(val === '' ? 0 : parseInt(val));
+                }
+                board.push(row);
+            }
+            return board;
+        }
+
+        function solver(board) {
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    if (board[r][c] === 0) {
+                        for (let n = 1; n <= 9; n++) {
+                            if (isValid(board, r, c, n)) {
+                                board[r][c] = n;
+                                if (solver(board)) return true;
+                                board[r][c] = 0;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function checkWin() {
+            let board = getBoard();
+            if (!board.flat().includes(0) && !document.querySelector('.invalid')) {
+                gridElement.classList.add('winner-grid');
+            }
+        }
+
+        function nextStage() {
+            currentStage++;
+            document.getElementById('stageNum').innerText = currentStage + " / 100";
+            createGrid();
+        }
+
+        function resetBoard() { createGrid(); }
+        createGrid();
+    </script>
+</body>
+</html>

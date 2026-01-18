@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Neural 2048: Premium Edition</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --grid-bg: #1e293b;
+            --cell-bg: #334155;
+            --accent: #8b5cf6;
+            --text: #f8fafc;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: var(--bg); color: var(--text); 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; overflow: hidden;
+        }
+
+        /* Top Navigation */
+        .home-link {
+            position: absolute; top: 20px; left: 20px;
+            text-decoration: none; color: var(--text); background: rgba(255,255,255,0.1);
+            padding: 10px 20px; border-radius: 12px; border: 1px solid var(--accent);
+            backdrop-filter: blur(5px); font-weight: bold; transition: 0.3s;
+        }
+        .home-link:hover { background: var(--accent); transform: translateY(-2px); }
+
+        .container { display: flex; gap: 50px; align-items: center; }
+
+        /* The Game Board */
+        .grid-container {
+            background: var(--grid-bg); padding: 15px; border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 2px solid #334155;
+        }
+
+        .grid {
+            display: grid; grid-template-columns: repeat(4, 90px);
+            grid-template-rows: repeat(4, 90px); gap: 12px;
+        }
+
+        .cell {
+            width: 90px; height: 90px; background: var(--cell-bg);
+            border-radius: 10px; display: flex; justify-content: center;
+            align-items: center; font-size: 2rem; font-weight: 800;
+            transition: all 0.15s ease-in-out;
+        }
+
+        /* Stylish Tile Colors */
+        .cell[data-v="2"] { background: #e2e8f0; color: #1e293b; }
+        .cell[data-v="4"] { background: #cbd5e1; color: #1e293b; }
+        .cell[data-v="8"] { background: #fbbf24; color: #fff; box-shadow: 0 0 15px #fbbf24; }
+        .cell[data-v="16"] { background: #f59e0b; color: #fff; }
+        .cell[data-v="32"] { background: #f97316; color: #fff; }
+        .cell[data-v="64"] { background: #ef4444; color: #fff; }
+        .cell[data-v="128"] { background: #ec4899; color: #fff; font-size: 1.7rem; box-shadow: 0 0 20px #ec4899; }
+        .cell[data-v="256"] { background: #d946ef; color: #fff; font-size: 1.7rem; }
+        .cell[data-v="512"] { background: #a855f7; color: #fff; }
+        .cell[data-v="1024"] { background: #8b5cf6; color: #fff; font-size: 1.4rem; }
+        .cell[data-v="2048"] { background: #06b6d4; color: #fff; font-size: 1.4rem; box-shadow: 0 0 30px #06b6d4; animation: pulse 1s infinite; }
+
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.05);} 100% {transform: scale(1);} }
+
+        /* Sidebar Panel */
+        .sidebar {
+            width: 240px; background: rgba(30, 41, 59, 0.7); padding: 30px;
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .score-title { color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; }
+        .score-val { font-size: 2.5rem; font-weight: 900; margin-bottom: 20px; }
+
+        button {
+            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white; font-weight: bold; font-size: 1rem; cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { filter: brightness(1.2); transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-link">🏠 EXIT TO HOME</a>
+
+    <div class="container">
+        <div class="grid-container">
+            <div class="grid" id="grid"></div>
+        </div>
+
+        <div class="sidebar">
+            <div class="score-title">Brain Score</div>
+            <div id="score" class="score-val">0</div>
+            
+            <div class="score-title">Target</div>
+            <div class="score-val" style="color: #06b6d4;">2048</div>
+
+            <button onclick="init()">RESTART MISSION</button>
+            <p style="margin-top:20px; color:#94a3b8; font-size:0.85rem; line-height:1.5;">
+                <b>How to Play:</b> Use your <b>Arrow Keys</b> to merge matching numbers. Reach 2048 to win!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let grid = [];
+        let score = 0;
+        const gridElem = document.getElementById('grid');
+
+        function init() {
+            grid = Array(16).fill(0);
+            score = 0;
+            document.getElementById('score').innerText = score;
+            addTile(); addTile();
+            render();
+        }
+
+        function addTile() {
+            let empty = grid.map((v, i) => v === 0 ? i : null).filter(v => v !== null);
+            if (empty.length) grid[empty[Math.floor(Math.random() * empty.length)]] = Math.random() > 0.1 ? 2 : 4;
+        }
+
+        function render() {
+            gridElem.innerHTML = '';
+            grid.forEach(v => {
+                let div = document.createElement('div');
+                div.className = 'cell';
+                if (v) {
+                    div.innerText = v;
+                    div.setAttribute('data-v', v);
+                }
+                gridElem.appendChild(div);
+            });
+        }
+
+        function slide(row) {
+            let arr = row.filter(v => v);
+            for (let i = 0; i < arr.length - 1; i++) {
+                if (arr[i] === arr[i+1]) {
+                    arr[i] *= 2;
+                    score += arr[i];
+                    arr.splice(i+1, 1);
+                }
+            }
+            while (arr.length < 4) arr.push(0);
+            return arr;
+        }
+
+        function handleInput(e) {
+            let oldGrid = [...grid];
+            for (let i = 0; i < 4; i++) {
+                let row = [], indices = [];
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    indices = [i*4, i*4+1, i*4+2, i*4+3];
+                } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    indices = [i, i+4, i+8, i+12];
+                } else return;
+
+                row = indices.map(idx => grid[idx]);
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') row.reverse();
+                
+                let processed = slide(row);
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') processed.reverse();
+                
+                indices.forEach((idx, k) => grid[idx] = processed[k]);
+            }
+
+            if (JSON.stringify(oldGrid) !== JSON.stringify(grid)) {
+                addTile();
+                document.getElementById('score').innerText = score;
+                render();
+            }
+        }
+
+        window.addEventListener('keydown', handleInput);
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch 9: Gravitation | EduPulse Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: '#06b6d4', darkBg: '#020617' },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #020617; color: #f8fafc; }
+        .glass { background: rgba(6, 182, 212, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(6, 182, 212, 0.1); }
+        .math-box { font-family: 'Courier New', monospace; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border-left: 3px solid #06b6d4; }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-20">
+
+    <nav class="fixed top-0 w-full z-50 glass border-b border-cyan-500/10 px-6 py-4 flex justify-between items-center">
+        <a href="science9.html" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition">
+            <i class="fas fa-arrow-left"></i> <span class="font-bold">Dashboard</span>
+        </a>
+        <div class="text-lg font-bold text-cyan-400">Gravitation</div>
+        <div class="w-8"></div>
+    </nav>
+
+    <header class="pt-32 pb-12 px-6 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-500/20 text-cyan-400 mb-6 text-2xl">
+            <i class="fas fa-globe-americas"></i>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-serif font-bold mb-4">Universal Gravity</h1>
+        <p class="text-slate-400 max-w-2xl mx-auto">Why do apples fall? Why do planets orbit the sun? The answer lies in the invisible force that binds the universe together.</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 space-y-12">
+
+        <!-- Universal Law -->
+        <section class="glass p-8 rounded-3xl">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-4">Universal Law of Gravitation</h2>
+            <p class="text-sm text-slate-300 mb-6">Every object in the universe attracts every other object with a force which is proportional to the product of their masses and inversely proportional to the square of the distance between them.</p>
+            
+            <div class="flex flex-col md:flex-row items-center gap-8 justify-center">
+                <div class="math-box text-xl">
+                    $$ F = G \frac{M \times m}{d^2} $$
+                </div>
+                <div class="text-sm text-slate-400">
+                    <div><b>G:</b> Universal Constant ($6.67 \times 10^{-11} Nm^2/kg^2$)</div>
+                    <div><b>M, m:</b> Masses of objects</div>
+                    <div><b>d:</b> Distance between centers</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Free Fall -->
+        <section class="grid md:grid-cols-2 gap-6">
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="font-bold text-lg text-white mb-2">Free Fall</h3>
+                <p class="text-sm text-slate-400 mb-4">When an object falls towards the earth under the influence of gravitational force alone.</p>
+                <div class="bg-black/30 p-3 rounded-lg text-xs text-cyan-300">
+                    Acceleration due to gravity (g) = $9.8 m/s^2$.
+                    <br>It is independent of the mass of the object (Feather and Hammer fall at same rate in vacuum).
+                </div>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="font-bold text-lg text-white mb-2">Mass vs Weight</h3>
+                <table class="w-full text-xs text-left mt-2 text-slate-300">
+                    <tr class="border-b border-white/5"><th class="py-2">Mass (m)</th><th class="py-2">Weight (W)</th></tr>
+                    <tr class="border-b border-white/5"><td class="py-2">Measure of Inertia</td><td class="py-2">Force of gravity ($W=mg$)</td></tr>
+                    <tr class="border-b border-white/5"><td class="py-2">Constant everywhere</td><td class="py-2">Changes with location</td></tr>
+                    <tr><td class="py-2">Scalar (kg)</td><td class="py-2">Vector (Newton)</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- Thrust & Pressure -->
+        <section class="glass p-8 rounded-3xl">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-4">Thrust and Pressure</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <ul class="space-y-4 text-sm text-slate-300">
+                        <li><b>Thrust:</b> The force acting on an object perpendicular to the surface.</li>
+                        <li><b>Pressure:</b> The thrust per unit area. ($P = \frac{Thrust}{Area}$)</li>
+                        <li><b>Unit:</b> Pascal (Pa).</li>
+                    </ul>
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl">
+                    <h4 class="font-bold text-white text-sm mb-2">Why sharp knives cut better?</h4>
+                    <p class="text-xs text-slate-400">Sharp edge = Very small Area. For same Force, Pressure becomes very large ($P \propto 1/A$), making it easy to cut.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Archimedes -->
+        <section class="glass p-8 rounded-3xl border-l-4 border-cyan-500">
+            <h2 class="text-xl font-bold text-white mb-2">Archimedes' Principle</h2>
+            <p class="text-sm text-slate-300 mb-4">"When a body is immersed fully or partially in a fluid, it experiences an upward force (Buoyancy) that is equal to the weight of the fluid displaced by it."</p>
+            
+            <div class="grid grid-cols-2 gap-4 text-xs text-slate-400">
+                <div class="bg-black/30 p-3 rounded-lg">
+                    <b>Applications:</b> Designing ships, submarines, lactometers (milk purity), hydrometers.
+                </div>
+                <div class="bg-black/30 p-3 rounded-lg">
+                    <b>Float vs Sink:</b> Density < Water $\to$ Float. Density > Water $\to$ Sink.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="fixed bottom-0 w-full glass border-t border-cyan-500/10 p-4 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="ch8.html" class="text-slate-400 hover:text-white text-sm font-medium"><i class="fas fa-arrow-left mr-1"></i> Prev</a>
+            <a href="ch10.html" class="bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-2 rounded-full font-bold shadow-lg shadow-cyan-500/20 transition">Next Chapter <i class="fas fa-arrow-right ml-1"></i></a>
+        </div>
+    </footer>
+
+</body>
+</html>

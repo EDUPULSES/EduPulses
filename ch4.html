@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch 4: Atom Structure | EduPulse Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: '#e879f9', darkBg: '#020617' },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #020617; color: #f8fafc; }
+        .glass { background: rgba(232, 121, 249, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(232, 121, 249, 0.1); }
+        .model-card { transition: 0.3s; }
+        .model-card:hover { background: rgba(232, 121, 249, 0.1); transform: translateY(-5px); }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-20">
+
+    <nav class="fixed top-0 w-full z-50 glass border-b border-fuchsia-500/10 px-6 py-4 flex justify-between items-center">
+        <a href="science9.html" class="flex items-center gap-2 text-slate-400 hover:text-fuchsia-400 transition">
+            <i class="fas fa-arrow-left"></i> <span class="font-bold">Dashboard</span>
+        </a>
+        <div class="text-lg font-bold text-fuchsia-400">Structure of Atom</div>
+        <div class="w-8"></div>
+    </nav>
+
+    <header class="pt-32 pb-12 px-6 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-fuchsia-500/20 text-fuchsia-400 mb-6 text-2xl">
+            <i class="fas fa-bullseye"></i>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-serif font-bold mb-4">Inside the Atom</h1>
+        <p class="text-slate-400 max-w-2xl mx-auto">Atoms are not indivisible. They contain smaller charged particles: Electrons, Protons, and Neutrons.</p>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 space-y-12">
+
+        <!-- Particles -->
+        <section class="grid grid-cols-3 gap-4 text-center">
+            <div class="glass p-4 rounded-2xl">
+                <div class="text-fuchsia-400 font-bold mb-1">Electron ($e^-$)</div>
+                <div class="text-xs text-slate-500">J.J. Thomson (1897)</div>
+                <div class="text-xs text-slate-400 mt-1">Negative Charge</div>
+            </div>
+            <div class="glass p-4 rounded-2xl">
+                <div class="text-fuchsia-400 font-bold mb-1">Proton ($p^+$)</div>
+                <div class="text-xs text-slate-500">E. Goldstein (1886)</div>
+                <div class="text-xs text-slate-400 mt-1">Positive Charge</div>
+            </div>
+            <div class="glass p-4 rounded-2xl">
+                <div class="text-fuchsia-400 font-bold mb-1">Neutron ($n$)</div>
+                <div class="text-xs text-slate-500">J. Chadwick (1932)</div>
+                <div class="text-xs text-slate-400 mt-1">No Charge</div>
+            </div>
+        </section>
+
+        <!-- Models -->
+        <section class="space-y-6">
+            <h2 class="text-2xl font-bold text-fuchsia-400 mb-6">Evolution of Atomic Models</h2>
+            
+            <div class="model-card glass p-6 rounded-3xl flex flex-col md:flex-row gap-6 items-center">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center text-2xl"><i class="fas fa-cookie-bite text-slate-400"></i></div>
+                <div>
+                    <h3 class="font-bold text-lg text-white">Thomson's Model (Plum Pudding)</h3>
+                    <p class="text-sm text-slate-400 mt-2">Atom is a sphere of positive charge with electrons embedded in it like dry fruits in a pudding or seeds in a watermelon. <span class="text-red-400 block mt-1 text-xs">Failed: Could not explain Rutherford's experiment.</span></p>
+                </div>
+            </div>
+
+            <div class="model-card glass p-6 rounded-3xl flex flex-col md:flex-row gap-6 items-center">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center text-2xl"><i class="fas fa-bullseye text-slate-400"></i></div>
+                <div>
+                    <h3 class="font-bold text-lg text-white">Rutherford's Model (Nuclear Model)</h3>
+                    <p class="text-sm text-slate-400 mt-2">Famous Gold Foil Experiment (Alpha scattering).<br>1. Most space is empty.<br>2. Positive charge (Nucleus) is very small and heavy in center.<br>3. Electrons revolve around nucleus.</p>
+                </div>
+            </div>
+
+            <div class="model-card glass p-6 rounded-3xl flex flex-col md:flex-row gap-6 items-center">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center text-2xl"><i class="fas fa-circle-notch text-slate-400"></i></div>
+                <div>
+                    <h3 class="font-bold text-lg text-white">Bohr's Model</h3>
+                    <p class="text-sm text-slate-400 mt-2">Electrons revolve in discrete orbits (Shells: K, L, M, N). While revolving in these orbits, they do not radiate energy.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Electronic Config -->
+        <section class="glass p-8 rounded-3xl">
+            <h2 class="text-2xl font-bold text-fuchsia-400 mb-6">Electronic Configuration</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-bold text-white mb-2">Rules:</h4>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li>1. Max electrons in a shell = $2n^2$ (K=2, L=8, M=18).</li>
+                        <li>2. Outermost shell cannot hold more than 8 electrons.</li>
+                        <li>3. Shells are filled step-wise.</li>
+                    </ul>
+                </div>
+                <div class="bg-black/30 p-4 rounded-2xl text-center">
+                    <h4 class="font-bold text-white mb-4">Example: Sodium (Na)</h4>
+                    <div class="text-xs text-slate-500 mb-1">Atomic Number (Z) = 11</div>
+                    <div class="flex justify-center gap-2">
+                        <div class="w-10 h-10 rounded-full border-2 border-fuchsia-500 flex items-center justify-center text-xs">2</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-fuchsia-500 flex items-center justify-center text-xs">8</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-fuchsia-400/50 flex items-center justify-center text-xs">1</div>
+                    </div>
+                    <div class="text-xs text-fuchsia-400 mt-2">K, L, M Shells</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Isotopes -->
+        <section class="grid md:grid-cols-2 gap-6">
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="font-bold text-lg text-white mb-2">Isotopes</h3>
+                <p class="text-sm text-slate-400">Atoms of same element, same Atomic Number, <b>different Mass Number</b>.</p>
+                <div class="mt-2 text-xs text-fuchsia-300">Ex: Carbon-12 & Carbon-14. <br>Applications: U-235 (Nuclear fuel), Co-60 (Cancer treatment).</div>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="font-bold text-lg text-white mb-2">Isobars</h3>
+                <p class="text-sm text-slate-400">Atoms of different elements, different Atomic Number, <b>same Mass Number</b>.</p>
+                <div class="mt-2 text-xs text-fuchsia-300">Ex: Calcium (Z=20) and Argon (Z=18) both have Mass=40.</div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="fixed bottom-0 w-full glass border-t border-fuchsia-500/10 p-4 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="ch3.html" class="text-slate-400 hover:text-white text-sm font-medium"><i class="fas fa-arrow-left mr-1"></i> Prev</a>
+            <a href="ch5.html" class="bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-6 py-2 rounded-full font-bold shadow-lg shadow-fuchsia-500/20 transition">Next Chapter <i class="fas fa-arrow-right ml-1"></i></a>
+        </div>
+    </footer>
+
+</body>
+</html>

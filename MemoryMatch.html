@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Neural Memory Match</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel-bg: #1e293b;
+            --accent: #f472b6; /* Pink/Rose for Memory */
+            --card-back: #334155;
+            --text: #f8fafc;
+        }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); color: var(--text); 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; overflow: hidden;
+        }
+
+        .home-link {
+            position: absolute; top: 20px; left: 20px;
+            text-decoration: none; color: var(--text); background: rgba(255,255,255,0.1);
+            padding: 10px 20px; border-radius: 12px; border: 1px solid var(--accent);
+            font-weight: bold; transition: 0.3s;
+        }
+        .home-link:hover { background: var(--accent); color: #fff; }
+
+        .game-wrapper { display: flex; gap: 50px; align-items: center; }
+
+        /* The Card Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-template-rows: repeat(4, 130px);
+            gap: 15px;
+        }
+
+        .card {
+            width: 100px; height: 130px;
+            background: var(--card-back);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .card.flipped { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 3rem; border-radius: 10px;
+        }
+
+        .card-back { background: var(--card-back); border: 2px solid #475569; }
+        
+        .card-front {
+            background: white; transform: rotateY(180deg);
+            color: #1e293b; border: 2px solid var(--accent);
+        }
+
+        /* Sidebar Stats */
+        .sidebar {
+            width: 220px; background: rgba(30, 41, 59, 0.7); padding: 30px;
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 2.2rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
+
+        button {
+            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            background: var(--accent); color: white; font-weight: bold;
+            cursor: pointer; transition: 0.3s;
+        }
+        button:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-link">🏠 EXIT TO HOME</a>
+
+    <div class="game-wrapper">
+        <div class="grid" id="grid"></div>
+
+        <div class="sidebar">
+            <div class="stat-label">Matches</div>
+            <div id="matches" class="stat-value">0 / 8</div>
+            
+            <div class="stat-label">Moves</div>
+            <div id="moves" class="stat-value">0</div>
+
+            <button onclick="startGame()">RESTART GAME</button>
+            <p style="margin-top:20px; color:#94a3b8; font-size:0.85rem;">
+                <b>Goal:</b> Find all matching pairs in the fewest moves possible!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const symbols = ['🍎', '🍌', '🍉', '🍇', '🍓', '🍒', '🥝', '🥑'];
+        let cards = [...symbols, ...symbols];
+        let flippedCards = [];
+        let matchedCount = 0;
+        let moves = 0;
+        let canClick = true;
+
+        const grid = document.getElementById('grid');
+        const matchesDisplay = document.getElementById('matches');
+        const movesDisplay = document.getElementById('moves');
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function createCard(symbol) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                <div class="card-back">?</div>
+                <div class="card-front">${symbol}</div>
+            `;
+            card.addEventListener('click', () => flipCard(card, symbol));
+            return card;
+        }
+
+        function flipCard(card, symbol) {
+            if (!canClick || card.classList.contains('flipped') || flippedCards.includes(card)) return;
+
+            card.classList.add('flipped');
+            flippedCards.push({ card, symbol });
+
+            if (flippedCards.length === 2) {
+                moves++;
+                movesDisplay.innerText = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            canClick = false;
+            const [choice1, choice2] = flippedCards;
+
+            if (choice1.symbol === choice2.symbol) {
+                matchedCount++;
+                matchesDisplay.innerText = `${matchedCount} / 8`;
+                flippedCards = [];
+                canClick = true;
+                if (matchedCount === 8) setTimeout(() => alert('🧠 MEMORY MASTER! All pairs found!'), 500);
+            } else {
+                setTimeout(() => {
+                    choice1.card.classList.remove('flipped');
+                    choice2.card.classList.remove('flipped');
+                    flippedCards = [];
+                    canClick = true;
+                }, 1000);
+            }
+        }
+
+        function startGame() {
+            grid.innerHTML = '';
+            flippedCards = [];
+            matchedCount = 0;
+            moves = 0;
+            matchesDisplay.innerText = '0 / 8';
+            movesDisplay.innerText = '0';
+            canClick = true;
+            
+            shuffle(cards).forEach(symbol => {
+                grid.appendChild(createCard(symbol));
+            });
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
