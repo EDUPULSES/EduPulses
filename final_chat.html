@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Chat 8.0 - File Share Edition</title>
+    
+    <script type="module">
+    // 1. IMMEDIATE SESSION CHECK
+    if (sessionStorage.getItem("chat_authorized") !== "true") {
+        window.location.replace("Gate_Chat.html"); // Use .replace so they can't click 'Back' to return
+    }
+
+    // 2. FIREBASE MODULES
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    // ... rest of your imports
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --owner: #eab308;
+            --bg: #020617;
+            --sidebar: #0f172a;
+            --text: #f8fafc;
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+
+        body { 
+            margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); 
+            color: var(--text); height: 100vh; display: flex; overflow: hidden; 
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        /* --- SIDEBAR --- */
+        #sidebar { 
+            width: 300px; background: var(--sidebar); border-right: 1px solid #1e293b; 
+            display: flex; flex-direction: column; transition: 0.3s;
+        }
+        
+        .group-item {
+            padding: 14px; margin: 8px 12px; border-radius: 12px;
+            background: rgba(255,255,255,0.03); cursor: pointer; 
+            border: 2px solid transparent; transition: 0.2s; position: relative;
+        }
+        .group-item:hover { background: rgba(255,255,255,0.06); }
+        .group-item.owned { border-color: rgba(234, 179, 8, 0.3); }
+        .group-item.active { 
+            background: var(--primary) !important; 
+            border-color: var(--primary-dark) !important;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* --- CHAT WINDOW --- */
+        #chat-window { flex: 1; display: flex; flex-direction: column; background: var(--bg); position: relative; }
+        
+        #messages { 
+            flex: 1; overflow-y: auto; padding: 20px; 
+            display: flex; flex-direction: column; gap: 12px; 
+            scroll-behavior: smooth;
+        }
+
+        .msg { 
+            max-width: 75%; padding: 12px 16px; border-radius: 18px; 
+            font-size: 14px; line-height: 1.5; position: relative; 
+            word-wrap: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .sent { 
+            align-self: flex-end; background: var(--primary); 
+            border-bottom-right-radius: 4px; color: white;
+        }
+        .received { 
+            align-self: flex-start; background: #1e293b; 
+            border-bottom-left-radius: 4px; border: 1px solid #334155;
+        }
+        
+        /* FILE PREVIEWS */
+        .chat-img { 
+            max-width: 100%; border-radius: 10px; margin-top: 5px; 
+            cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .chat-img:hover { transform: scale(1.02); }
+        .file-attachment {
+            display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.2);
+            padding: 8px 12px; border-radius: 10px; margin-top: 5px; text-decoration: none; color: white;
+        }
+        .file-attachment:hover { background: rgba(0,0,0,0.3); }
+
+        /* --- INPUT AREA --- */
+        .input-bar {
+            padding: 20px; background: var(--sidebar); border-top: 1px solid #1e293b;
+            display: flex; gap: 12px; align-items: center;
+        }
+        input { 
+            width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #334155; 
+            background: #020617; color: white; outline: none; transition: 0.2s;
+        }
+        input:focus { border-color: var(--primary); }
+        
+        .btn { padding: 0 20px; height: 46px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-blue { background: var(--primary); color: white; }
+        .btn-blue:hover { background: var(--primary-dark); }
+        .btn-icon { padding: 0 14px; background: #334155; color: #cbd5e1; font-size: 20px; }
+        .btn-icon:hover { background: #475569; color: white; }
+
+        /* --- MODALS --- */
+        .modal {
+            position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85);
+            display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px);
+        }
+        .card {
+            background: #1e293b; padding: 30px; border-radius: 24px; width: 90%; max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #334155;
+        }
+        
+        /* Helpers */
+        .hidden { display: none !important; }
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--primary);
+            border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen" style="position:fixed; inset:0; background:var(--bg); z-index:10000; display:flex; justify-content:center; align-items:center;">
+        <div class="card" style="text-align:center;">
+            <h2 style="margin-top:0; color:var(--primary);">Pro Chat 8.0</h2>
+            <input type="number" id="login-id" placeholder="Your Unique ID (Numbers)" style="margin-bottom:10px;">
+            <input type="password" id="login-pass" placeholder="Password" style="margin-bottom:10px;">
+            <input type="text" id="login-name" placeholder="Display Name (New Users)" style="display:none; margin-bottom:10px;">
+            <button class="btn btn-blue" style="width:100%" onclick="auth()">Enter Securely</button>
+            <p onclick="document.getElementById('login-name').style.display='block'" style="font-size:12px; cursor:pointer; margin-top:15px; color:#94a3b8;">First time? Click here to Register</p>
+        </div>
+    </div>
+
+    <div id="manage-modal" class="modal">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 id="manage-title" style="margin:0">Manage</h3>
+                <button onclick="closeManage()" class="btn btn-icon" style="height:32px; padding:0 10px;">&times;</button>
+            </div>
+            <div id="owner-controls" class="hidden" style="padding:15px; background:rgba(234, 179, 8, 0.1); border-radius:12px; border:1px solid rgba(234, 179, 8, 0.3); margin-bottom:15px;">
+                <p style="color:var(--owner); font-weight:bold; margin:0 0 10px 0;">👑 Owner Zone</p>
+                <button class="btn" style="background:#ef4444; color:white; width:100%; font-size:12px;" onclick="permDelete()">⚠ DELETE GROUP PERMANENTLY</button>
+            </div>
+            <div style="max-height:200px; overflow-y:auto; margin-bottom:15px;">
+                <p style="font-weight:bold; font-size:12px; color:#94a3b8;">MEMBERS</p>
+                <div id="member-list-ui"></div>
+            </div>
+            <button class="btn" style="background:#334155; color:white; width:100%;" onclick="leaveGroup()">Leave Group</button>
+        </div>
+    </div>
+
+    <div id="app" class="hidden" style="width:100%; height:100%;">
+        
+        <div id="sidebar">
+            <div style="padding:24px; border-bottom:1px solid #1e293b;">
+                <div id="my-name" style="font-weight:700; font-size:18px;">Name</div>
+                <div id="my-id" style="font-size:12px; color:#64748b; font-family:monospace;">ID: 000</div>
+                <button class="btn" style="background:transparent; border:1px solid #334155; color:#94a3b8; font-size:10px; height:24px; margin-top:8px;" onclick="location.reload()">Logout</button>
+            </div>
+            <div id="group-list" style="flex:1; overflow-y:auto; padding:10px 0;"></div>
+            <div style="padding:15px; display:grid; gap:10px;">
+                <button class="btn btn-blue" onclick="createGroup()">+ New Group</button>
+                <button class="btn" style="background:#1e293b; color:white;" onclick="joinGroup()">🔍 Join Code</button>
+            </div>
+        </div>
+
+        <div id="chat-window">
+            <div style="padding:15px 25px; background:rgba(15, 23, 42, 0.95); backdrop-filter:blur(10px); border-bottom:1px solid #1e293b; display:flex; justify-content:space-between; align-items:center; z-index:10;">
+                <div>
+                    <div id="chat-header-name" style="font-weight:700; font-size:16px;"># Welcome</div>
+                    <div id="chat-header-code" style="font-size:11px; color:#64748b;">Select a chat to begin</div>
+                </div>
+                <button id="manage-btn" class="hidden btn btn-icon" onclick="openManage()">⚙️</button>
+            </div>
+
+            <div id="messages">
+                <div style="text-align:center; margin-top:50px; opacity:0.3;">
+                    <h3 style="margin-bottom:5px;">No Chat Selected</h3>
+                    <p>Select a group from the sidebar</p>
+                </div>
+            </div>
+
+            <div class="input-bar">
+                <label class="btn btn-icon" style="cursor:pointer; display:flex; align-items:center;">
+                    📎
+                    <input type="file" id="file-input" hidden onchange="handleFileSelect(this)">
+                </label>
+                <input type="text" id="msg-input" placeholder="Type a message...">
+                <button class="btn btn-blue" onclick="send()">Send</button>
+            </div>
+            
+            <div id="upload-indicator" class="hidden" style="position:absolute; bottom:80px; left:20px; background:#1e293b; padding:10px 20px; border-radius:30px; border:1px solid var(--primary); display:flex; align-items:center; gap:10px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+                <div class="spinner"></div>
+                <span style="font-size:12px; font-weight:bold;">Processing File...</span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, get, push, onValue, onChildAdded, update, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYwds3VZWOBl3dq9cXBliqLkXW8P2n4XQ",
+            authDomain: "my-chat-app-50074.firebaseapp.com",
+            databaseURL: "https://my-chat-app-50074-default-rtdb.firebaseio.com",
+            projectId: "my-chat-app-50074",
+            storageBucket: "my-chat-app-50074.firebasestorage.app",
+            messagingSenderId: "40034921623",
+            appId: "1:40034921623:web:875f6c7a87c9b6bef54dd2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let me = null;
+        let activeGid = null;
+        let activeGMeta = null;
+
+        // --- SECURITY ---
+        // Prevent XSS attacks (HTML injection)
+        function escapeHtml(text) {
+            if (!text) return text;
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // --- AUTH ---
+        window.auth = async () => {
+            const id = document.getElementById('login-id').value;
+            const pass = document.getElementById('login-pass').value;
+            const name = document.getElementById('login-name').value;
+            
+            if(!id || !pass) return alert("Please fill ID and Password");
+
+            const uRef = ref(db, 'users/'+id);
+            const snap = await get(uRef);
+
+            if(!snap.exists() && name) {
+                await set(uRef, { name, pass });
+                me = { id, name };
+            } else if(snap.exists() && snap.val().pass === pass) {
+                me = { id, name: snap.val().name };
+            } else { 
+                return alert("Invalid ID or Password. If new, enter Name."); 
+            }
+
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'flex'; // Use classlist in prod, simple style here
+            document.getElementById('app').classList.remove('hidden');
+            
+            document.getElementById('my-name').innerText = me.name;
+            document.getElementById('my-id').innerText = "ID: " + me.id;
+            loadGroups();
+        };
+
+        // --- GROUPS ---
+        window.createGroup = async () => {
+            const name = prompt("Group Name:");
+            if(!name) return;
+            const pass = prompt("Set Password:");
+            
+            // Generate simple 6-char ID
+            const gid = Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            await set(ref(db, 'groups_meta/'+gid), { name, pass, owner: me.id });
+            await update(ref(db, `users/${me.id}/groups`), { [gid]: true });
+            await update(ref(db, `groups_meta/${gid}/members`), { [me.id]: me.name });
+        };
+
+        window.joinGroup = async () => {
+            const gid = prompt("Enter Group Code:").toUpperCase();
+            const snap = await get(ref(db, 'groups_meta/'+gid));
+            if(!snap.exists()) return alert("Group not found");
+            
+            const pass = prompt("Enter Group Password:");
+            if(pass !== snap.val().pass) return alert("Wrong Password");
+            
+            await update(ref(db, `users/${me.id}/groups`), { [gid]: true });
+            await update(ref(db, `groups_meta/${gid}/members`), { [me.id]: me.name });
+        };
+
+        function loadGroups() {
+            onValue(ref(db, `users/${me.id}/groups`), (snap) => {
+                const list = document.getElementById('group-list');
+                list.innerHTML = "";
+                const groups = snap.val() || {};
+                
+                Object.keys(groups).forEach(async (gid) => {
+                    const metaSnap = await get(ref(db, 'groups_meta/'+gid));
+                    if(!metaSnap.exists()) return;
+                    
+                    const meta = metaSnap.val();
+                    const isOwner = meta.owner === me.id;
+                    
+                    const div = document.createElement('div');
+                    div.className = `group-item ${isOwner ? 'owned' : ''} ${gid === activeGid ? 'active' : ''}`;
+                    div.innerHTML = `
+                        <div style="font-weight:600; font-size:15px;"># ${escapeHtml(meta.name)}</div>
+                        <div style="font-size:11px; opacity:0.5; margin-top:2px;">Code: ${gid}</div>
+                        ${isOwner ? '<span style="position:absolute; top:10px; right:10px; font-size:10px;">👑</span>' : ''}
+                    `;
+                    div.onclick = () => selectGroup(gid);
+                    list.appendChild(div);
+                });
+            });
+        }
+
+        async function selectGroup(gid) {
+            activeGid = gid;
+            const msgContainer = document.getElementById('messages');
+            msgContainer.innerHTML = "";
+            loadGroups(); // Refresh UI highlights
+
+            // Load Meta
+            onValue(ref(db, 'groups_meta/'+gid), (snap) => {
+                activeGMeta = snap.val();
+                if(!activeGMeta) return; // Group might be deleted
+                document.getElementById('chat-header-name').innerText = "# " + activeGMeta.name;
+                document.getElementById('chat-header-code').innerText = "Code: " + gid;
+                document.getElementById('manage-btn').classList.remove('hidden');
+            });
+
+            // Load Messages (Limit to last 50 for performance)
+            const q = query(ref(db, 'messages/'+gid), limitToLast(50));
+            onChildAdded(q, (snap) => {
+                const m = snap.val();
+                const isMe = m.sid === me.id;
+                
+                const div = document.createElement('div');
+                div.className = `msg ${isMe ? 'sent' : 'received'}`;
+                
+                let content = "";
+                
+                // Name label for others
+                if(!isMe) content += `<small style="display:block; font-weight:700; opacity:0.6; margin-bottom:4px;">${escapeHtml(m.sname)}</small>`;
+
+                // Check content type
+                if(m.type === 'image') {
+                    content += `<img src="${m.fileData}" class="chat-img" onclick="window.open(this.src)">`;
+                } else if(m.type === 'file') {
+                    content += `
+                    <a href="${m.fileData}" download="${m.fileName || 'file'}" class="file-attachment">
+                        <span style="font-size:20px;">📄</span>
+                        <div>
+                            <div style="font-weight:bold; font-size:13px;">${escapeHtml(m.fileName)}</div>
+                            <div style="font-size:10px; opacity:0.7;">Click to Download</div>
+                        </div>
+                    </a>`;
+                } else {
+                    content += `<span>${escapeHtml(m.text)}</span>`;
+                }
+
+                div.innerHTML = content;
+                msgContainer.appendChild(div);
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            });
+        }
+
+        // --- MESSAGING & FILE UPLOAD ---
+        
+        // 1. Text Send
+        window.send = () => {
+            const input = document.getElementById('msg-input');
+            const text = input.value.trim();
+            if(!text || !activeGid) return;
+
+            push(ref(db, 'messages/'+activeGid), {
+                text: text,
+                type: 'text',
+                sid: me.id,
+                sname: me.name,
+                timestamp: Date.now()
+            });
+            input.value = "";
+        };
+
+        // 2. File Handling (Base64)
+        window.handleFileSelect = async (input) => {
+            if(!activeGid) {
+                input.value = "";
+                return alert("Select a group first!");
+            }
+            
+            const file = input.files[0];
+            if(!file) return;
+
+            // SIZE LIMIT: 300KB (Strict limit to prevent DB crash)
+            if(file.size > 300000) {
+                alert("File too large! Max size is 300KB for this version.");
+                input.value = "";
+                return;
+            }
+
+            document.getElementById('upload-indicator').classList.remove('hidden');
+
+            try {
+                const base64 = await toBase64(file);
+                const isImage = file.type.startsWith('image/');
+                
+                await push(ref(db, 'messages/'+activeGid), {
+                    type: isImage ? 'image' : 'file',
+                    fileData: base64,
+                    fileName: file.name,
+                    sid: me.id,
+                    sname: me.name,
+                    timestamp: Date.now()
+                });
+            } catch(e) {
+                console.error(e);
+                alert("Error sending file.");
+            }
+
+            document.getElementById('upload-indicator').classList.add('hidden');
+            input.value = "";
+        };
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        // Enter key to send
+        document.getElementById('msg-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') window.send();
+        });
+
+        // --- MANAGEMENT ---
+        window.openManage = () => {
+            document.getElementById('manage-modal').style.display = 'flex';
+            const isOwner = activeGMeta.owner === me.id;
+            
+            document.getElementById('owner-controls').className = isOwner ? '' : 'hidden';
+            
+            const listUI = document.getElementById('member-list-ui');
+            listUI.innerHTML = "Loading...";
+            
+            onValue(ref(db, `groups_meta/${activeGid}/members`), (snap) => {
+                listUI.innerHTML = "";
+                const members = snap.val() || {};
+                Object.entries(members).forEach(([uid, uname]) => {
+                    const row = document.createElement('div');
+                    row.style = "display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155; align-items:center;";
+                    
+                    row.innerHTML = `
+                        <span style="font-size:13px;">${escapeHtml(uname)} <span style="opacity:0.5; font-size:10px;">(${uid})</span></span>
+                        ${isOwner && uid !== me.id ? `<button class="btn" style="background:#ef4444; color:white; font-size:10px; height:24px; padding:0 8px;" onclick="kickUser('${uid}')">Kick</button>` : ''}
+                    `;
+                    listUI.appendChild(row);
+                });
+            });
+        };
+
+        window.closeManage = () => document.getElementById('manage-modal').style.display = 'none';
+
+        // Export functions to window for HTML access
+        window.kickUser = async (uid) => {
+            if(!confirm("Kick user?")) return;
+            await remove(ref(db, `users/${uid}/groups/${activeGid}`));
+            await remove(ref(db, `groups_meta/${activeGid}/members/${uid}`));
+        };
+
+        window.permDelete = async () => {
+            if(!confirm("Are you sure? This will delete all messages and the group forever.")) return;
+            await remove(ref(db, 'groups_meta/'+activeGid));
+            await remove(ref(db, 'messages/'+activeGid));
+            window.location.reload();
+        };
+
+        window.leaveGroup = async () => {
+            if(!confirm("Leave group?")) return;
+            await remove(ref(db, `users/${me.id}/groups/${activeGid}`));
+            await remove(ref(db, `groups_meta/${activeGid}/members/${me.id}`));
+            window.location.reload();
+        };
+
+    </script>
+</body>
+</html>

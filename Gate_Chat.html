@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Access | EduPulses</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- // DELETE THIS FROM Gate_Chat.html -->
+<script>
+    if (sessionStorage.getItem("vault_access") !== "vault2") { window.location.href = "index.html"; }
+</script>
+    
+    <style>
+        :root {
+            --bg: #05080f;
+            --accent: #3b82f6;
+            --error: #ef4444;
+            --glass: rgba(255, 255, 255, 0.05);
+            --text: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Background Animation */
+        .bg-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--accent);
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: move 10s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-50%, -50%); }
+            to { transform: translate(50%, 50%); }
+        }
+
+        .login-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 1;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--accent);
+            font-size: 32px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        h2 { margin: 0 0 10px; font-weight: 800; letter-spacing: -0.5px; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        button:active { transform: translateY(0); }
+
+        #err-msg {
+            color: var(--error);
+            font-size: 13px;
+            margin-top: 15px;
+            display: none;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <div class="login-card">
+        <div class="icon-box">
+            <i class="fas fa-shield-halved"></i>
+        </div>
+        <h2>Private Chat</h2>
+        <p>This area is restricted to authorized personnel. Please enter the access key.</p>
+
+        <div class="input-group">
+            <input type="password" id="access-key" placeholder="••••••••" onkeypress="if(event.key==='Enter') verify()">
+        </div>
+
+        <button onclick="verify()">
+            Access Vault <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <div id="err-msg">
+            <i class="fas fa-circle-exclamation"></i> Invalid Access Key
+        </div>
+    </div>
+
+    <script>
+        // Set your desired password here
+        const SECRET_KEY = "Ashwani2010"; 
+
+        function verify() {
+            const input = document.getElementById('access-key').value;
+            const error = document.getElementById('err-msg');
+
+            if (input === SECRET_KEY) {
+                // Save access state so final_chat.html knows they are authorized
+                sessionStorage.setItem("chat_authorized", "true");
+                
+                // Redirect to your main chat file
+                window.location.href = "final_chat.html";
+            } else {
+                error.style.display = "block";
+                document.getElementById('access-key').value = "";
+                setTimeout(() => { error.style.display = "none"; }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS REPLICATED FROM ADMIN.HTML */
+        :root { 
+            --bg: #05080f; 
+            --accent: #00d4ff; 
+            --error: #ff4444; 
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        body { 
+            background: var(--bg); color: white; font-family: 'Outfit', sans-serif; 
+            height: 100vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
+            overflow: hidden; margin: 0; transition: background 0.5s;
+        }
+        
+        /* ERROR UI (THE DISGUISE) */
+        #fake-ui { transition: 0.8s; z-index: 1; }
+        h1 { font-size: 8rem; margin: 0; color: var(--error); opacity: 0.2; user-select: none; cursor: default; }
+        p { 
+            font-size: 1.2rem; opacity: 0.5; max-width: 400px; 
+            line-height: 1.6; margin: 10px auto; cursor: default; user-select: none;
+        }
+        .home-btn { 
+            display: inline-block; margin-top: 30px; color: var(--accent); 
+            text-decoration: none; border: 1px solid var(--accent); 
+            padding: 12px 25px; border-radius: 8px; font-weight: 600; 
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+        .home-btn:hover { background: var(--accent); color: #000; }
+
+        /* HIDDEN ADMIN LOGIN (THE GATEWAY) */
+        #admin-panel {
+            display: none; position: absolute; z-index: 100;
+            background: var(--glass); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 20px; width: 320px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .panel-title { color: var(--accent); font-weight: 900; letter-spacing: 2px; margin-bottom: 20px; }
+        input {
+            width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+            padding: 14px; margin-bottom: 12px; border-radius: 10px;
+            color: white; font-family: 'Outfit'; outline: none; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--accent); }
+        .login-btn {
+            width: 100%; padding: 14px; background: var(--accent); color: #000;
+            border: none; border-radius: 10px; font-weight: 800; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase;
+        }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,212,255,0.3); }
+        #err-msg { color: var(--error); font-size: 12px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="fake-ui">
+        <h1 id="trigger-h1">404</h1>
+        <p id="trigger-text">The requested URL was not found on this server. That’s all we know.</p>
+        <a href="index.html" class="home-btn">Return to Safety</a>
+    </div>
+
+    <div id="admin-panel">
+        <div class="panel-title">MASTER GATEWAY</div>
+        <input type="text" id="adm_id" placeholder="ADMIN IDENTITY" autocomplete="off">
+        <input type="password" id="adm_pass" placeholder="SECURITY KEY">
+        <button class="login-btn" onclick="authorize()">INITIALIZE</button>
+        <p id="err-msg">UNAUTHORIZED ACCESS DETECTED</p>
+    </div>
+
+    <script>
+        const ui = document.getElementById('fake-ui');
+        const panel = document.getElementById('admin-panel');
+        const desc = document.getElementById('trigger-text');
+        const h1 = document.getElementById('trigger-h1');
+
+        // SECRET TRIPLE CLICK TRIGGER
+        function reveal() {
+            ui.style.opacity = "0.05";
+            ui.style.filter = "blur(10px)";
+            panel.style.display = "block";
+        }
+
+        desc.addEventListener('click', (e) => { if (e.detail === 3) reveal(); });
+        h1.addEventListener('click', (e) => { if (e.detail === 3) reveal(); });
+
+        function authorize() {
+            const id = document.getElementById('adm_id').value;
+            const pass = document.getElementById('adm_pass').value;
+            const error = document.getElementById('err-msg');
+
+            // Redirects to A.HTML or adas.html based on your choice
+            if (id === "Ashwani1" && pass === "Ashwani#2010") {
+                sessionStorage.setItem("vault_access", "vault1"); // Required for A.HTML/adas.html
+                window.location.href = "AshChat.HTML"; 
+            } 
+            else if (id === "Master" && pass === "Admin@2025") {
+                sessionStorage.setItem("vault_access", "vault1");
+                window.location.href = "adas.html"; 
+            }
+            else {
+                error.style.display = "block";
+                setTimeout(() => { error.style.display = "none"; }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
